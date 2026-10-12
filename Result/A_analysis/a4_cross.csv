@@ -1,0 +1,341 @@
+﻿source,level,arm,direction,year,fold,seed,condition,roi,metric,json_path,value
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,model,"[""model""]","""dorga"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,mode,"[""mode""]","""24to26_split1"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,seed,"[""seed""]",1
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,train_year,"[""train_year""]",2024
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,test_year,"[""test_year""]",2026
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,n_train,"[""n_train""]",565
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,n_test,"[""n_test""]",587
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,best_val_epoch,"[""best_val_epoch""]",35
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,best_val_mae,"[""best_val_mae""]",0.4297385620915033
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,acc,"[""acc""]",0.6141396933560477
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,mae,"[""mae""]",0.4186541737649063
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,bias,"[""bias""]",-0.23637137989778534
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,pat_bias,"[""pat_bias""]",-0.23411562240686284
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,ci_lo,"[""ci_lo""]",-0.3152311744871887
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,,ci_hi,"[""ci_hi""]",-0.15342580832690336
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.6678023850085179
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.3526405451448041
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",-0.1890971039182283
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.6013628620102215
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.4395229982964225
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",-0.23509369676320271
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5621805792163543
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.4752981260647359
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",-0.3083475298126065
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.6252129471890971
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.4071550255536627
+E1/dorga/24to26_split1/results.json,arm,24to26_split1,fwd,2026,1,1,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.21294718909710392
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,model,"[""model""]","""dorga"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,mode,"[""mode""]","""24to26_split2"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,seed,"[""seed""]",2
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,train_year,"[""train_year""]",2024
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,test_year,"[""test_year""]",2026
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,n_train,"[""n_train""]",571
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,n_test,"[""n_test""]",587
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,best_val_epoch,"[""best_val_epoch""]",13
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,best_val_mae,"[""best_val_mae""]",0.3163265306122449
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,acc,"[""acc""]",0.6213798977853492
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,mae,"[""mae""]",0.4075809199318569
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,bias,"[""bias""]",-0.2022998296422487
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,pat_bias,"[""pat_bias""]",-0.19770266986139753
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,ci_lo,"[""ci_lo""]",-0.2803070095665205
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,,ci_hi,"[""ci_hi""]",-0.11780324338518473
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.7001703577512777
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.31686541737649065
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",-0.15332197614991483
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5979557069846678
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.4514480408858603
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",-0.20272572402044292
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5468483816013628
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.4787052810902896
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",-0.2776831345826235
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.6405451448040886
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.3833049403747871
+E1/dorga/24to26_split2/results.json,arm,24to26_split2,fwd,2026,2,2,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.17546848381601363
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,model,"[""model""]","""dorga"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,mode,"[""mode""]","""24to26_split3"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,seed,"[""seed""]",3
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,train_year,"[""train_year""]",2024
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,test_year,"[""test_year""]",2026
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,n_train,"[""n_train""]",572
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,n_test,"[""n_test""]",587
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,best_val_epoch,"[""best_val_epoch""]",14
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,best_val_mae,"[""best_val_mae""]",0.3835616438356164
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,acc,"[""acc""]",0.5932708688245315
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,mae,"[""mae""]",0.4395229982964225
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,bias,"[""bias""]",-0.2342419080068143
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,pat_bias,"[""pat_bias""]",-0.23044781749225485
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,ci_lo,"[""ci_lo""]",-0.3136040113113123
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,,ci_hi,"[""ci_hi""]",-0.14772955963163367
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.6984667802385008
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.32367972742759793
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",-0.07495741056218058
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5536626916524702
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.4957410562180579
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",-0.26405451448040884
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5264054514480409
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5059625212947189
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",-0.3526405451448041
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5945485519591142
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.43270868824531517
+E1/dorga/24to26_split3/results.json,arm,24to26_split3,fwd,2026,3,3,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.2453151618398637
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,model,"[""model""]","""dorga"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,mode,"[""mode""]","""24to26_split4"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,seed,"[""seed""]",4
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,train_year,"[""train_year""]",2024
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,test_year,"[""test_year""]",2026
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,n_train,"[""n_train""]",578
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,n_test,"[""n_test""]",587
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,best_val_epoch,"[""best_val_epoch""]",31
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,best_val_mae,"[""best_val_mae""]",0.36964285714285716
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,acc,"[""acc""]",0.6350085178875639
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,mae,"[""mae""]",0.39437819420783643
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,bias,"[""bias""]",-0.1635434412265758
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,pat_bias,"[""pat_bias""]",-0.16378993404648776
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,ci_lo,"[""ci_lo""]",-0.2391792441028175
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,,ci_hi,"[""ci_hi""]",-0.08920459434755713
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.7035775127768313
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.3083475298126065
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",-0.151618398637138
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.6047700170357752
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.44122657580919933
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",-0.22998296422487224
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.6013628620102215
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.43100511073253833
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",-0.2231686541737649
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.6303236797274276
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.3969335604770017
+E1/dorga/24to26_split4/results.json,arm,24to26_split4,fwd,2026,4,4,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.049403747870528106
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,model,"[""model""]","""dorga"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,mode,"[""mode""]","""24to26_split5"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,seed,"[""seed""]",5
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,train_year,"[""train_year""]",2024
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,test_year,"[""test_year""]",2026
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,n_train,"[""n_train""]",586
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,n_test,"[""n_test""]",587
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,best_val_epoch,"[""best_val_epoch""]",5
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,best_val_mae,"[""best_val_mae""]",0.6098484848484849
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,acc,"[""acc""]",0.5719761499148212
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,mae,"[""mae""]",0.47103918228279384
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,bias,"[""bias""]",-0.2819420783645656
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,pat_bias,"[""pat_bias""]",-0.2795044522825853
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,ci_lo,"[""ci_lo""]",-0.366973248205865
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,,ci_hi,"[""ci_hi""]",-0.19145195271214294
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.6780238500851788
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.3373083475298126
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",-0.17717206132879046
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5775127768313458
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.4684838160136286
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",-0.25383304940374785
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.514480408858603
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5468483816013628
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",-0.37649063032367974
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5178875638841567
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.5315161839863713
+E1/dorga/24to26_split5/results.json,arm,24to26_split5,fwd,2026,5,5,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.3202725724020443
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,model,"[""model""]","""dorga"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,mode,"[""mode""]","""26to24_split1"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,seed,"[""seed""]",1
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,train_year,"[""train_year""]",2026
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,test_year,"[""test_year""]",2024
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,n_train,"[""n_train""]",468
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,n_test,"[""n_test""]",718
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,best_val_epoch,"[""best_val_epoch""]",30
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,best_val_mae,"[""best_val_mae""]",0.32563025210084034
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,acc,"[""acc""]",0.5477019498607242
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,mae,"[""mae""]",0.5017409470752089
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,bias,"[""bias""]",0.1431058495821727
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,pat_bias,"[""pat_bias""]",0.14228378851540613
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,ci_lo,"[""ci_lo""]",0.035726182773517336
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,,ci_hi,"[""ci_hi""]",0.24720890348417918
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.5612813370473537
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.4860724233983287
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",0.11838440111420613
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5584958217270195
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.49025069637883006
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",0.22562674094707522
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5222841225626741
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5334261838440112
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",0.18523676880222842
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5487465181058496
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.4972144846796657
+E1/dorga/26to24_split1/results.json,arm,26to24_split1,rev,2024,1,1,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",0.04317548746518106
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,model,"[""model""]","""dorga"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,mode,"[""mode""]","""26to24_split2"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,seed,"[""seed""]",2
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,train_year,"[""train_year""]",2026
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,test_year,"[""test_year""]",2024
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,n_train,"[""n_train""]",472
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,n_test,"[""n_test""]",718
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,best_val_epoch,"[""best_val_epoch""]",21
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,best_val_mae,"[""best_val_mae""]",0.3108695652173913
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,acc,"[""acc""]",0.5473537604456824
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,mae,"[""mae""]",0.5013927576601671
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,bias,"[""bias""]",0.11142061281337047
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,pat_bias,"[""pat_bias""]",0.11526820809909046
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,ci_lo,"[""ci_lo""]",0.00878557920837333
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,,ci_hi,"[""ci_hi""]",0.2207781112882216
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.5543175487465181
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.49442896935933145
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",0.0766016713091922
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5571030640668524
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.48885793871866295
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",0.16016713091922005
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5041782729805014
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5501392757660167
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",0.23537604456824512
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5738161559888579
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.47214484679665736
+E1/dorga/26to24_split2/results.json,arm,26to24_split2,rev,2024,2,2,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.026462395543175487
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,model,"[""model""]","""dorga"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,mode,"[""mode""]","""26to24_split3"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,seed,"[""seed""]",3
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,train_year,"[""train_year""]",2026
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,test_year,"[""test_year""]",2024
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,n_train,"[""n_train""]",471
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,n_test,"[""n_test""]",718
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,best_val_epoch,"[""best_val_epoch""]",25
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,best_val_mae,"[""best_val_mae""]",0.3879310344827586
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,acc,"[""acc""]",0.5389972144846796
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,mae,"[""mae""]",0.5118384401114207
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,bias,"[""bias""]",0.1977715877437326
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,pat_bias,"[""pat_bias""]",0.19588544625309331
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,ci_lo,"[""ci_lo""]",0.08825614948776714
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,,ci_hi,"[""ci_hi""]",0.29805511890070713
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.5515320334261838
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.4860724233983287
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",0.16016713091922005
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5571030640668524
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.48746518105849584
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",0.2590529247910863
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5167130919220055
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5557103064066853
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",0.24651810584958217
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5306406685236769
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.5181058495821727
+E1/dorga/26to24_split3/results.json,arm,26to24_split3,rev,2024,3,3,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",0.12534818941504178
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,model,"[""model""]","""dorga"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,mode,"[""mode""]","""26to24_split4"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,seed,"[""seed""]",4
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,train_year,"[""train_year""]",2026
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,test_year,"[""test_year""]",2024
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,n_train,"[""n_train""]",470
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,n_test,"[""n_test""]",718
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,best_val_epoch,"[""best_val_epoch""]",29
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,best_val_mae,"[""best_val_mae""]",0.3782051282051282
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,acc,"[""acc""]",0.5591922005571031
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,mae,"[""mae""]",0.4909470752089137
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,bias,"[""bias""]",0.06824512534818941
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,pat_bias,"[""pat_bias""]",0.07038149758737994
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,ci_lo,"[""ci_lo""]",-0.03190341317179553
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,,ci_hi,"[""ci_hi""]",0.17302449439857517
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.5779944289693594
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.46657381615598886
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",0.0905292479108635
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5264623955431755
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.5139275766016713
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",0.1796657381615599
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.5557103064066853
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5069637883008357
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",0.055710306406685235
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5766016713091922
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.4763231197771588
+E1/dorga/26to24_split4/results.json,arm,26to24_split4,rev,2024,4,4,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.052924791086350974
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,model,"[""model""]","""dorga"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,mode,"[""mode""]","""26to24_split5"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,seed,"[""seed""]",5
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,train_year,"[""train_year""]",2026
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,test_year,"[""test_year""]",2024
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,roi_order/0,"[""roi_order"", 0]","""RT"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,roi_order/1,"[""roi_order"", 1]","""LT"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,roi_order/2,"[""roi_order"", 2]","""RB"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,roi_order/3,"[""roi_order"", 3]","""LB"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,mrm,"[""mrm""]","""/shared/home/mai/JeongGeon/MICCAI2026/MRM.pth"""
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,n_train,"[""n_train""]",467
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,n_test,"[""n_test""]",718
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,final_epoch,"[""final_epoch""]",50
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,best_val_epoch,"[""best_val_epoch""]",41
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,best_val_mae,"[""best_val_mae""]",0.3854166666666667
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,acc,"[""acc""]",0.5668523676880223
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,mae,"[""mae""]",0.47458217270194986
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,bias,"[""bias""]",0.08182451253481894
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,tail_bias,"[""tail_bias""]",NaN
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,pat_bias,"[""pat_bias""]",0.08282571186982951
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,ci_lo,"[""ci_lo""]",-0.02003367777035056
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,,ci_hi,"[""ci_hi""]",0.18266498411718995
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RT,per_roi/RT/acc,"[""per_roi"", ""RT"", ""acc""]",0.575208913649025
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RT,per_roi/RT/mae,"[""per_roi"", ""RT"", ""mae""]",0.4582172701949861
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RT,per_roi/RT/bias,"[""per_roi"", ""RT"", ""bias""]",0.04596100278551532
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LT,per_roi/LT/acc,"[""per_roi"", ""LT"", ""acc""]",0.5682451253481894
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LT,per_roi/LT/mae,"[""per_roi"", ""LT"", ""mae""]",0.4610027855153203
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LT,per_roi/LT/bias,"[""per_roi"", ""LT"", ""bias""]",0.149025069637883
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RB,per_roi/RB/acc,"[""per_roi"", ""RB"", ""acc""]",0.552924791086351
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RB,per_roi/RB/mae,"[""per_roi"", ""RB"", ""mae""]",0.5041782729805014
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,RB,per_roi/RB/bias,"[""per_roi"", ""RB"", ""bias""]",0.14206128133704735
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LB,per_roi/LB/acc,"[""per_roi"", ""LB"", ""acc""]",0.5710306406685237
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LB,per_roi/LB/mae,"[""per_roi"", ""LB"", ""mae""]",0.47493036211699163
+E1/dorga/26to24_split5/results.json,arm,26to24_split5,rev,2024,5,5,,LB,per_roi/LB/bias,"[""per_roi"", ""LB"", ""bias""]",-0.009749303621169917

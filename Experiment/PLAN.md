@@ -101,7 +101,7 @@
 | a7_negative_control | checkpoint/E4, 18개 예측 | Result/A_analysis/a7_negative_control.csv |
 | a8_indomain_raw | checkpoint/AppendixB/dorga, 30개 예측 | Result/A_analysis/a8_indomain_raw.csv |
 | b1_summary | a4~a8 CSV + checkpoint/E1 예측 | Result/B_summary/b1_summary.csv |
-| c1_confusion | checkpoint/E1 예측 + b1 CSV | Result/C_figures/c1_confusion/e1_confusion_quadrant.png |
+| c1_confusion | checkpoint/E1 예측 + b1 CSV | Result/C_figures/c1_confusion.png |
 
 각 분석 CSV에는 개별 실행 지표와 집계 지표를 함께 담는다. cohort 환자 bias 벡터도 값별로 저장한다.
 source는 비교할 Result_old의 상대 경로, json_path는 그 문서의 항목 위치다.

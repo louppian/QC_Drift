@@ -12,7 +12,7 @@ ROI 헤더는 **정합 보정 후** 값 δ_corr = δ_obs + Δγ_matched/2 와 �
 
 입력:  checkpoint/E1/dorga/{24to26,26to24}_split*/test_preds.npz  (preds·labels)
        Result/B_summary/b1_summary.csv  (delta_corrected: δ_corr·CI)
-산출:  Result/C_figures/c1_confusion/e1_confusion_quadrant.png
+산출:  Result/C_figures/c1_confusion.png
 
 실행:  python Experiment/C_figures/c1_confusion.py
 """
@@ -34,7 +34,7 @@ _HERE = Path(__file__).resolve().parent
 _REPO = next(p for p in (_HERE, *_HERE.parents) if (p / "Experiment").is_dir())
 CKPT_E1   = _REPO / "checkpoint" / "E1" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
 VERDICT   = _REPO / "Result" / "B_summary" / "b1_summary.csv"     # 입력: δ_corr + CI (보정 후)
-RESULT_E1 = _REPO / "Result" / "C_figures" / "c1_confusion"
+RESULT_E1 = _REPO / "Result" / "C_figures"
 ROI = ["RT", "LT", "RB", "LB"]                    # core.ROI = preds 열 순서
 NGRADE = 5
 MODES = [("24to26", "2024→2026 (2026 라벨)"),      # e1_cross.DIRS 의 tag
@@ -157,7 +157,7 @@ def main():
     cb.set_label("행 정규화 비율(recall)", fontsize=10, labelpad=10)
 
     RESULT_E1.mkdir(parents=True, exist_ok=True)
-    png = RESULT_E1 / "e1_confusion_quadrant.png"
+    png = RESULT_E1 / "c1_confusion.png"
     fig.savefig(png, dpi=180, bbox_inches="tight")
     plt.close(fig)
     print(f"[save] {png}")

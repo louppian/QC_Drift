@@ -85,7 +85,7 @@ SPECIAL = {
  'E1/e1_summary.csv':'B_summary/b1_summary/e1_summary.csv',
  'E2/e2_summary.csv':'B_summary/b1_summary/e2_summary.csv',
  'AppendixB/appb_summary.csv':'B_summary/b1_summary/appb_summary.csv',
- 'E1/e1_confusion_quadrant.png':'C_figures/c1_confusion/e1_confusion_quadrant.png',
+ 'E1/e1_confusion_quadrant.png':'C_figures/c1_confusion.png',
 }
 
 def collect(base):

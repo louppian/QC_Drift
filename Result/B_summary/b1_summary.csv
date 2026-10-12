@@ -1,0 +1,196 @@
+﻿source,level,arm,direction,year,fold,seed,condition,roi,metric,json_path,value
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_obs,"[""delta_corrected"", ""overall"", ""delta_obs""]",0.1721
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/gamma,"[""delta_corrected"", ""overall"", ""gamma""]",-0.0516
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_obs_ci/0,"[""delta_corrected"", ""overall"", ""delta_obs_ci"", 0]",0.10791726464062368
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_obs_ci/1,"[""delta_corrected"", ""overall"", ""delta_obs_ci"", 1]",0.23537777127220605
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_g_matched,"[""delta_corrected"", ""overall"", ""delta_g_matched""]",-0.03715793625480327
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_corr,"[""delta_corrected"", ""overall"", ""delta_corr""]",0.15352103187259836
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/ci/0,"[""delta_corrected"", ""overall"", ""ci"", 0]",0.05211191732356517
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/ci/1,"[""delta_corrected"", ""overall"", ""ci"", 1]",0.2522094411048126
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_g_raw,"[""delta_corrected"", ""overall"", ""delta_g_raw""]",-0.10174576033751226
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/delta_corr_raw,"[""delta_corrected"", ""overall"", ""delta_corr_raw""]",0.12122711983124387
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/ci_raw/0,"[""delta_corrected"", ""overall"", ""ci_raw"", 0]",0.030209387773393367
+A1_verdict.json,summary,,,,,,,overall,delta_corrected/overall/ci_raw/1,"[""delta_corrected"", ""overall"", ""ci_raw"", 1]",0.2100974134039861
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_obs,"[""delta_corrected"", ""RT"", ""delta_obs""]",0.1238
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/gamma,"[""delta_corrected"", ""RT"", ""gamma""]",-0.0255
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_obs_ci/0,"[""delta_corrected"", ""RT"", ""delta_obs_ci"", 0]",0.04768369207809808
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_obs_ci/1,"[""delta_corrected"", ""RT"", ""delta_obs_ci"", 1]",0.1992054965825591
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_g_matched,"[""delta_corrected"", ""RT"", ""delta_g_matched""]",-0.022044122283892083
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_corr,"[""delta_corrected"", ""RT"", ""delta_corr""]",0.11277793885805396
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/ci/0,"[""delta_corrected"", ""RT"", ""ci"", 0]",-0.0203679328695483
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/ci/1,"[""delta_corrected"", ""RT"", ""ci"", 1]",0.23905028407708137
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_g_raw,"[""delta_corrected"", ""RT"", ""delta_g_raw""]",-0.10572547302086945
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/delta_corr_raw,"[""delta_corrected"", ""RT"", ""delta_corr_raw""]",0.07093726348956528
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/ci_raw/0,"[""delta_corrected"", ""RT"", ""ci_raw"", 0]",-0.045228330988940885
+A1_verdict.json,summary,,,,,,,RT,delta_corrected/RT/ci_raw/1,"[""delta_corrected"", ""RT"", ""ci_raw"", 1]",0.1820277163953432
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_obs,"[""delta_corrected"", ""LT"", ""delta_obs""]",0.2159
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/gamma,"[""delta_corrected"", ""LT"", ""gamma""]",-0.0212
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_obs_ci/0,"[""delta_corrected"", ""LT"", ""delta_obs_ci"", 0]",0.1296841000648258
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_obs_ci/1,"[""delta_corrected"", ""LT"", ""delta_obs_ci"", 1]",0.30055205588706546
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_g_matched,"[""delta_corrected"", ""LT"", ""delta_g_matched""]",-0.04384235637432568
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_corr,"[""delta_corrected"", ""LT"", ""delta_corr""]",0.19397882181283715
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/ci/0,"[""delta_corrected"", ""LT"", ""ci"", 0]",0.06888605967307532
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/ci/1,"[""delta_corrected"", ""LT"", ""ci"", 1]",0.31573714399742525
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_g_raw,"[""delta_corrected"", ""LT"", ""delta_g_raw""]",-0.1384977749587724
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/delta_corr_raw,"[""delta_corrected"", ""LT"", ""delta_corr_raw""]",0.1466511125206138
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/ci_raw/0,"[""delta_corrected"", ""LT"", ""ci_raw"", 0]",0.028887590746435043
+A1_verdict.json,summary,,,,,,,LT,delta_corrected/LT/ci_raw/1,"[""delta_corrected"", ""LT"", ""ci_raw"", 1]",0.25750723670327724
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_obs,"[""delta_corrected"", ""RB"", ""delta_obs""]",0.2403
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/gamma,"[""delta_corrected"", ""RB"", ""gamma""]",-0.0673
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_obs_ci/0,"[""delta_corrected"", ""RB"", ""delta_obs_ci"", 0]",0.15893964476721067
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_obs_ci/1,"[""delta_corrected"", ""RB"", ""delta_obs_ci"", 1]",0.3172434180311022
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_g_matched,"[""delta_corrected"", ""RB"", ""delta_g_matched""]",-0.0841194108297689
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_corr,"[""delta_corrected"", ""RB"", ""delta_corr""]",0.19824029458511555
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/ci/0,"[""delta_corrected"", ""RB"", ""ci"", 0]",0.06588448306486541
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/ci/1,"[""delta_corrected"", ""RB"", ""ci"", 1]",0.3240549876381431
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_g_raw,"[""delta_corrected"", ""RB"", ""delta_g_raw""]",-0.12010266717747535
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/delta_corr_raw,"[""delta_corrected"", ""RB"", ""delta_corr_raw""]",0.18024866641126233
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/ci_raw/0,"[""delta_corrected"", ""RB"", ""ci_raw"", 0]",0.06373600578204827
+A1_verdict.json,summary,,,,,,,RB,delta_corrected/RB/ci_raw/1,"[""delta_corrected"", ""RB"", ""ci_raw"", 1]",0.2893297382061433
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_obs,"[""delta_corrected"", ""LB"", ""delta_obs""]",0.1083
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/gamma,"[""delta_corrected"", ""LB"", ""gamma""]",-0.0924
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_obs_ci/0,"[""delta_corrected"", ""LB"", ""delta_obs_ci"", 0]",0.0284249192412092
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_obs_ci/1,"[""delta_corrected"", ""LB"", ""delta_obs_ci"", 1]",0.18657839812414773
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_g_matched,"[""delta_corrected"", ""LB"", ""delta_g_matched""]",0.0013741444687736248
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_corr,"[""delta_corrected"", ""LB"", ""delta_corr""]",0.1089870722343868
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/ci/0,"[""delta_corrected"", ""LB"", ""ci"", 0]",-0.022443120448924547
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/ci/1,"[""delta_corrected"", ""LB"", ""ci"", 1]",0.23500118810495862
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_g_raw,"[""delta_corrected"", ""LB"", ""delta_g_raw""]",-0.0426571261929318
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/delta_corr_raw,"[""delta_corrected"", ""LB"", ""delta_corr_raw""]",0.0869714369035341
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/ci_raw/0,"[""delta_corrected"", ""LB"", ""ci_raw"", 0]",-0.03112274517190916
+A1_verdict.json,summary,,,,,,,LB,delta_corrected/LB/ci_raw/1,"[""delta_corrected"", ""LB"", ""ci_raw"", 1]",0.20055339164417327
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_LT/estimate,"[""roi_contrasts"", ""RB_minus_LT"", ""estimate""]",0.004261472772278073
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_LT/ci_95_two_sided/0,"[""roi_contrasts"", ""RB_minus_LT"", ""ci_95_two_sided"", 0]",-0.14507416562701084
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_LT/ci_95_two_sided/1,"[""roi_contrasts"", ""RB_minus_LT"", ""ci_95_two_sided"", 1]",0.15059732920293184
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_LT/p_one_sided_gt_0,"[""roi_contrasts"", ""RB_minus_LT"", ""p_one_sided_gt_0""]",0.4764
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LT_LB/estimate,"[""roi_contrasts"", ""RB_minus_mean_RT_LT_LB"", ""estimate""]",0.05965901695002263
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LT_LB/ci_95_two_sided/0,"[""roi_contrasts"", ""RB_minus_mean_RT_LT_LB"", ""ci_95_two_sided"", 0]",-0.0451688815215959
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LT_LB/ci_95_two_sided/1,"[""roi_contrasts"", ""RB_minus_mean_RT_LT_LB"", ""ci_95_two_sided"", 1]",0.16296641563276296
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LT_LB/p_one_sided_gt_0,"[""roi_contrasts"", ""RB_minus_mean_RT_LT_LB"", ""p_one_sided_gt_0""]",0.1334
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LB/estimate,"[""roi_contrasts"", ""RB_minus_mean_RT_LB"", ""estimate""]",0.0873577890388949
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LB/ci_95_two_sided/0,"[""roi_contrasts"", ""RB_minus_mean_RT_LB"", ""ci_95_two_sided"", 0]",-0.008769143097359542
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LB/ci_95_two_sided/1,"[""roi_contrasts"", ""RB_minus_mean_RT_LB"", ""ci_95_two_sided"", 1]",0.18461337713280698
+A1_verdict.json,summary,,,,,,,,roi_contrasts/RB_minus_mean_RT_LB/p_one_sided_gt_0,"[""roi_contrasts"", ""RB_minus_mean_RT_LB"", ""p_one_sided_gt_0""]",0.0392
+A1_verdict.json,summary,,,,,,,,roi_contrast_note,"[""roi_contrast_note""]","""δ_corr 의 환자 단위 joint bootstrap 구름에서 산출. 탐색적 분석이며 다중성을 보정하지 않았다. CI 는 양측 95% percentile, p 는 단측 bootstrap tail 비율이다."""
+A1_verdict.json,summary,,,,,,,,roi_correlation/roi_order/0,"[""roi_correlation"", ""roi_order"", 0]","""RT"""
+A1_verdict.json,summary,,,,,,,,roi_correlation/roi_order/1,"[""roi_correlation"", ""roi_order"", 1]","""LT"""
+A1_verdict.json,summary,,,,,,,,roi_correlation/roi_order/2,"[""roi_correlation"", ""roi_order"", 2]","""RB"""
+A1_verdict.json,summary,,,,,,,,roi_correlation/roi_order/3,"[""roi_correlation"", ""roi_order"", 3]","""LB"""
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/0/0,"[""roi_correlation"", ""matrix"", 0, 0]",1.0
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/0/1,"[""roi_correlation"", ""matrix"", 0, 1]",0.5775730281358461
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/0/2,"[""roi_correlation"", ""matrix"", 0, 2]",0.5806322586463135
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/0/3,"[""roi_correlation"", ""matrix"", 0, 3]",0.45453368546244355
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/1/0,"[""roi_correlation"", ""matrix"", 1, 0]",0.5775730281358462
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/1/1,"[""roi_correlation"", ""matrix"", 1, 1]",0.9999999999999998
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/1/2,"[""roi_correlation"", ""matrix"", 1, 2]",0.3367391837929804
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/1/3,"[""roi_correlation"", ""matrix"", 1, 3]",0.4211811049398325
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/2/0,"[""roi_correlation"", ""matrix"", 2, 0]",0.5806322586463135
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/2/1,"[""roi_correlation"", ""matrix"", 2, 1]",0.3367391837929804
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/2/2,"[""roi_correlation"", ""matrix"", 2, 2]",0.9999999999999998
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/2/3,"[""roi_correlation"", ""matrix"", 2, 3]",0.5808261744064128
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/3/0,"[""roi_correlation"", ""matrix"", 3, 0]",0.4545336854624436
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/3/1,"[""roi_correlation"", ""matrix"", 3, 1]",0.4211811049398325
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/3/2,"[""roi_correlation"", ""matrix"", 3, 2]",0.5808261744064128
+A1_verdict.json,summary,,,,,,,,roi_correlation/matrix/3/3,"[""roi_correlation"", ""matrix"", 3, 3]",1.0
+A1_verdict.json,summary,,,,,,,,E3_recovery_slope,"[""E3_recovery_slope""]",0.9405300550678699
+A1_verdict.json,summary,,,,,,,,E4_leakage/0/0,"[""E4_leakage"", 0, 0]",1.0
+A1_verdict.json,summary,,,,,,,,E4_leakage/0/1,"[""E4_leakage"", 0, 1]",0.015300589932942872
+A1_verdict.json,summary,,,,,,,,E4_leakage/1/0,"[""E4_leakage"", 1, 0]",0.5
+A1_verdict.json,summary,,,,,,,,E4_leakage/1/1,"[""E4_leakage"", 1, 1]",0.034965388641859226
+A1_verdict.json,summary,,,,,,,,E4_leakage/2/0,"[""E4_leakage"", 2, 0]",0.25
+A1_verdict.json,summary,,,,,,,,E4_leakage/2/1,"[""E4_leakage"", 2, 1]",-0.009278041539070947
+AppendixB/appb_summary.csv,summary,,,,,,,,0/roi,"[0, ""roi""]","""overall"""
+AppendixB/appb_summary.csv,summary,,,,,,,,0/delta_g_raw,"[0, ""delta_g_raw""]","""-0.1017"""
+AppendixB/appb_summary.csv,summary,,,,,,,,0/ci_lo,"[0, ""ci_lo""]","""-0.2282"""
+AppendixB/appb_summary.csv,summary,,,,,,,,0/ci_hi,"[0, ""ci_hi""]","""0.0218"""
+AppendixB/appb_summary.csv,summary,,,,,,,,0/reject_A1_raw,"[0, ""reject_A1_raw""]","""0"""
+AppendixB/appb_summary.csv,summary,,,,,,,,1/roi,"[1, ""roi""]","""RT"""
+AppendixB/appb_summary.csv,summary,,,,,,,,1/delta_g_raw,"[1, ""delta_g_raw""]","""-0.1057"""
+AppendixB/appb_summary.csv,summary,,,,,,,,1/ci_lo,"[1, ""ci_lo""]","""-0.2727"""
+AppendixB/appb_summary.csv,summary,,,,,,,,1/ci_hi,"[1, ""ci_hi""]","""0.064"""
+AppendixB/appb_summary.csv,summary,,,,,,,,1/reject_A1_raw,"[1, ""reject_A1_raw""]","""0"""
+AppendixB/appb_summary.csv,summary,,,,,,,,2/roi,"[2, ""roi""]","""LT"""
+AppendixB/appb_summary.csv,summary,,,,,,,,2/delta_g_raw,"[2, ""delta_g_raw""]","""-0.1385"""
+AppendixB/appb_summary.csv,summary,,,,,,,,2/ci_lo,"[2, ""ci_lo""]","""-0.2897"""
+AppendixB/appb_summary.csv,summary,,,,,,,,2/ci_hi,"[2, ""ci_hi""]","""0.0111"""
+AppendixB/appb_summary.csv,summary,,,,,,,,2/reject_A1_raw,"[2, ""reject_A1_raw""]","""0"""
+AppendixB/appb_summary.csv,summary,,,,,,,,3/roi,"[3, ""roi""]","""RB"""
+AppendixB/appb_summary.csv,summary,,,,,,,,3/delta_g_raw,"[3, ""delta_g_raw""]","""-0.1201"""
+AppendixB/appb_summary.csv,summary,,,,,,,,3/ci_lo,"[3, ""ci_lo""]","""-0.2884"""
+AppendixB/appb_summary.csv,summary,,,,,,,,3/ci_hi,"[3, ""ci_hi""]","""0.0381"""
+AppendixB/appb_summary.csv,summary,,,,,,,,3/reject_A1_raw,"[3, ""reject_A1_raw""]","""0"""
+AppendixB/appb_summary.csv,summary,,,,,,,,4/roi,"[4, ""roi""]","""LB"""
+AppendixB/appb_summary.csv,summary,,,,,,,,4/delta_g_raw,"[4, ""delta_g_raw""]","""-0.0427"""
+AppendixB/appb_summary.csv,summary,,,,,,,,4/ci_lo,"[4, ""ci_lo""]","""-0.2139"""
+AppendixB/appb_summary.csv,summary,,,,,,,,4/ci_hi,"[4, ""ci_hi""]","""0.1272"""
+AppendixB/appb_summary.csv,summary,,,,,,,,4/reject_A1_raw,"[4, ""reject_A1_raw""]","""0"""
+E1/e1_summary.csv,summary,,,,,,,,0/model,"[0, ""model""]","""dorga"""
+E1/e1_summary.csv,summary,,,,,,,,0/roi,"[0, ""roi""]","""overall"""
+E1/e1_summary.csv,summary,,,,,,,,0/fwd_bias_mean,"[0, ""fwd_bias_mean""]","""-0.2237"""
+E1/e1_summary.csv,summary,,,,,,,,0/fwd_bias_sd,"[0, ""fwd_bias_sd""]","""0.0393"""
+E1/e1_summary.csv,summary,,,,,,,,0/rev_bias_mean,"[0, ""rev_bias_mean""]","""0.1205"""
+E1/e1_summary.csv,summary,,,,,,,,0/rev_bias_sd,"[0, ""rev_bias_sd""]","""0.0465"""
+E1/e1_summary.csv,summary,,,,,,,,0/delta_obs,"[0, ""delta_obs""]","""0.1721"""
+E1/e1_summary.csv,summary,,,,,,,,0/gamma,"[0, ""gamma""]","""-0.0516"""
+E1/e1_summary.csv,summary,,,,,,,,0/flip_Hdata,"[0, ""flip_Hdata""]","""1"""
+E1/e1_summary.csv,summary,,,,,,,,1/model,"[1, ""model""]","""dorga"""
+E1/e1_summary.csv,summary,,,,,,,,1/roi,"[1, ""roi""]","""RT"""
+E1/e1_summary.csv,summary,,,,,,,,1/fwd_bias_mean,"[1, ""fwd_bias_mean""]","""-0.1492"""
+E1/e1_summary.csv,summary,,,,,,,,1/fwd_bias_sd,"[1, ""fwd_bias_sd""]","""0.0398"""
+E1/e1_summary.csv,summary,,,,,,,,1/rev_bias_mean,"[1, ""rev_bias_mean""]","""0.0983"""
+E1/e1_summary.csv,summary,,,,,,,,1/rev_bias_sd,"[1, ""rev_bias_sd""]","""0.0387"""
+E1/e1_summary.csv,summary,,,,,,,,1/delta_obs,"[1, ""delta_obs""]","""0.1238"""
+E1/e1_summary.csv,summary,,,,,,,,1/gamma,"[1, ""gamma""]","""-0.0255"""
+E1/e1_summary.csv,summary,,,,,,,,1/flip_Hdata,"[1, ""flip_Hdata""]","""1"""
+E1/e1_summary.csv,summary,,,,,,,,2/model,"[2, ""model""]","""dorga"""
+E1/e1_summary.csv,summary,,,,,,,,2/roi,"[2, ""roi""]","""LT"""
+E1/e1_summary.csv,summary,,,,,,,,2/fwd_bias_mean,"[2, ""fwd_bias_mean""]","""-0.2371"""
+E1/e1_summary.csv,summary,,,,,,,,2/fwd_bias_sd,"[2, ""fwd_bias_sd""]","""0.0212"""
+E1/e1_summary.csv,summary,,,,,,,,2/rev_bias_mean,"[2, ""rev_bias_mean""]","""0.1947"""
+E1/e1_summary.csv,summary,,,,,,,,2/rev_bias_sd,"[2, ""rev_bias_sd""]","""0.0415"""
+E1/e1_summary.csv,summary,,,,,,,,2/delta_obs,"[2, ""delta_obs""]","""0.2159"""
+E1/e1_summary.csv,summary,,,,,,,,2/gamma,"[2, ""gamma""]","""-0.0212"""
+E1/e1_summary.csv,summary,,,,,,,,2/flip_Hdata,"[2, ""flip_Hdata""]","""1"""
+E1/e1_summary.csv,summary,,,,,,,,3/model,"[3, ""model""]","""dorga"""
+E1/e1_summary.csv,summary,,,,,,,,3/roi,"[3, ""roi""]","""RB"""
+E1/e1_summary.csv,summary,,,,,,,,3/fwd_bias_mean,"[3, ""fwd_bias_mean""]","""-0.3077"""
+E1/e1_summary.csv,summary,,,,,,,,3/fwd_bias_sd,"[3, ""fwd_bias_sd""]","""0.0544"""
+E1/e1_summary.csv,summary,,,,,,,,3/rev_bias_mean,"[3, ""rev_bias_mean""]","""0.173"""
+E1/e1_summary.csv,summary,,,,,,,,3/rev_bias_sd,"[3, ""rev_bias_sd""]","""0.0695"""
+E1/e1_summary.csv,summary,,,,,,,,3/delta_obs,"[3, ""delta_obs""]","""0.2403"""
+E1/e1_summary.csv,summary,,,,,,,,3/gamma,"[3, ""gamma""]","""-0.0673"""
+E1/e1_summary.csv,summary,,,,,,,,3/flip_Hdata,"[3, ""flip_Hdata""]","""1"""
+E1/e1_summary.csv,summary,,,,,,,,4/model,"[4, ""model""]","""dorga"""
+E1/e1_summary.csv,summary,,,,,,,,4/roi,"[4, ""roi""]","""LB"""
+E1/e1_summary.csv,summary,,,,,,,,4/fwd_bias_mean,"[4, ""fwd_bias_mean""]","""-0.2007"""
+E1/e1_summary.csv,summary,,,,,,,,4/fwd_bias_sd,"[4, ""fwd_bias_sd""]","""0.0894"""
+E1/e1_summary.csv,summary,,,,,,,,4/rev_bias_mean,"[4, ""rev_bias_mean""]","""0.0159"""
+E1/e1_summary.csv,summary,,,,,,,,4/rev_bias_sd,"[4, ""rev_bias_sd""]","""0.0631"""
+E1/e1_summary.csv,summary,,,,,,,,4/delta_obs,"[4, ""delta_obs""]","""0.1083"""
+E1/e1_summary.csv,summary,,,,,,,,4/gamma,"[4, ""gamma""]","""-0.0924"""
+E1/e1_summary.csv,summary,,,,,,,,4/flip_Hdata,"[4, ""flip_Hdata""]","""1"""
+E2/e2_summary.csv,summary,,,,,,,,0/roi,"[0, ""roi""]","""overall"""
+E2/e2_summary.csv,summary,,,,,,,,0/delta_g_matched,"[0, ""delta_g_matched""]","""-0.0372"""
+E2/e2_summary.csv,summary,,,,,,,,0/ci_lo,"[0, ""ci_lo""]","""-0.1919"""
+E2/e2_summary.csv,summary,,,,,,,,0/ci_hi,"[0, ""ci_hi""]","""0.1126"""
+E2/e2_summary.csv,summary,,,,,,,,0/reject_A1_matched,"[0, ""reject_A1_matched""]","""0"""
+E2/e2_summary.csv,summary,,,,,,,,1/roi,"[1, ""roi""]","""RT"""
+E2/e2_summary.csv,summary,,,,,,,,1/delta_g_matched,"[1, ""delta_g_matched""]","""-0.022"""
+E2/e2_summary.csv,summary,,,,,,,,1/ci_lo,"[1, ""ci_lo""]","""-0.2312"""
+E2/e2_summary.csv,summary,,,,,,,,1/ci_hi,"[1, ""ci_hi""]","""0.1751"""
+E2/e2_summary.csv,summary,,,,,,,,1/reject_A1_matched,"[1, ""reject_A1_matched""]","""0"""
+E2/e2_summary.csv,summary,,,,,,,,2/roi,"[2, ""roi""]","""LT"""
+E2/e2_summary.csv,summary,,,,,,,,2/delta_g_matched,"[2, ""delta_g_matched""]","""-0.0438"""
+E2/e2_summary.csv,summary,,,,,,,,2/ci_lo,"[2, ""ci_lo""]","""-0.2213"""
+E2/e2_summary.csv,summary,,,,,,,,2/ci_hi,"[2, ""ci_hi""]","""0.133"""
+E2/e2_summary.csv,summary,,,,,,,,2/reject_A1_matched,"[2, ""reject_A1_matched""]","""0"""
+E2/e2_summary.csv,summary,,,,,,,,3/roi,"[3, ""roi""]","""RB"""
+E2/e2_summary.csv,summary,,,,,,,,3/delta_g_matched,"[3, ""delta_g_matched""]","""-0.0841"""
+E2/e2_summary.csv,summary,,,,,,,,3/ci_lo,"[3, ""ci_lo""]","""-0.2885"""
+E2/e2_summary.csv,summary,,,,,,,,3/ci_hi,"[3, ""ci_hi""]","""0.1117"""
+E2/e2_summary.csv,summary,,,,,,,,3/reject_A1_matched,"[3, ""reject_A1_matched""]","""0"""
+E2/e2_summary.csv,summary,,,,,,,,4/roi,"[4, ""roi""]","""LB"""
+E2/e2_summary.csv,summary,,,,,,,,4/delta_g_matched,"[4, ""delta_g_matched""]","""0.0014"""
+E2/e2_summary.csv,summary,,,,,,,,4/ci_lo,"[4, ""ci_lo""]","""-0.1939"""
+E2/e2_summary.csv,summary,,,,,,,,4/ci_hi,"[4, ""ci_hi""]","""0.1975"""
+E2/e2_summary.csv,summary,,,,,,,,4/reject_A1_matched,"[4, ""reject_A1_matched""]","""0"""
