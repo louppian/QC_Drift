@@ -1,0 +1,27 @@
+# ── 데이터셋 (대용량) — CXR 내용은 무시하되 스크립트(.py)는 추적 ──
+#   무시: 2024 CXR/ · 2026 CXR/ · Merged/ · unified_labels.csv
+#   추적: build_dataset.py · inha_dataset.py (CXR 바로 아래 .py)
+/CXR/*
+!/CXR/*.py
+
+# ── 학습 가중치 (재생성 가능, 76GB) — 위치 불문 전역 무시 ──
+*.pth
+*.pt
+*.ckpt
+
+# ── 실험 산출: checkpoint/ = 가중치(.pth) + npz 만 (재생성 가능), git 제외 ──
+#    (json[results/history/summary]·CSV·A1_verdict 는 Result/ 에서 git 추적)
+/checkpoint/
+/Model/w6_out/
+/w6_out/
+
+# ── 캐시 ──
+**/__pycache__/
+*.pyc
+
+# ── Phase2A 판독 NPZ (환자 영상 5.2GB, make_npz.py 로 재생성) ──
+/Result/Phase2A/npz_sequences/
+
+# Local comparison reports
+/document/server_file_comparison.md
+/document/server_file_comparison.json

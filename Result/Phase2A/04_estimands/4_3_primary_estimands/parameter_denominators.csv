@@ -1,0 +1,8 @@
+﻿parameter,up,down,min_denominator
+"Δ_2024,RB,34 (공동 주)",135,68,68
+"Δ_2026,RB,34 (Δ_year 성분)",122,55,55
+"Δ_2024,RB,23 (Δ_cutpoint 성분)",118,135,118
+"Δ_far = Δ_2024,RB,01",22,157,22
+"Δ_2024,RT,34 (ROI contrast, RB 조건부)",55,42,42
+"Δ_2024,LT,34 (ROI contrast, RB 조건부)",55,19,19
+"Δ_2024,LB,34 (ROI contrast, RB 조건부)",119,75,75

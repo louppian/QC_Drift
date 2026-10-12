@@ -1,0 +1,2 @@
+﻿population,n_ms,patients,target_eligible_ms_excluding_original_ms,target_eligible_patients,rule
+all_len7_ms_from_original_patients,506,94,353,91,all length-7 mini-sequences from original-set patients; original-set mini-sequences excluded; overlap targets excluded
