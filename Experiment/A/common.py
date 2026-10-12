@@ -156,35 +156,15 @@ def match_two_cohorts(df, seed, n_bins=5):
 def run_arm(mode, splitter, seed, epochs, root=None, model="dorga", arm=None, skip_existing=True):
     """splitter 등록 후 core.train_arm 실행 (core 가 사전정렬 이미지를 디스크에서 로드).
     arm 주면 run_dir 이름을 그걸로(미지정 시 {mode}_s{seed}). results dict(+ npz) 반환.
-    skip_existing=True: saved NPZ metrics are recomputed; training history/metadata are reused from Result_old."""
+    skip_existing=True: replay best-val weights using the original model, split, evaluator and writer."""
     register(mode, splitter)
     root = Path(root)
     run_dir = root / (arm if arm else f"{mode}_s{seed}")     # checkpoint 하 arm 디렉터리
     npz = run_dir / "test_preds.npz"                         # npz 는 checkpoint
     rj = B._result_dir(run_dir) / "results.json"             # json 은 Result
     if skip_existing:
-        if not npz.exists():
-            B.predict_saved_arm(model, mode, seed, run_dir)
-        # Recompute prediction-derived metrics; never copy old metric values.
-        old_dir = Path(_REPO) / "Result_old" / run_dir.relative_to(Path(_REPO) / "checkpoint")
-        source = old_dir / "results.json"
-        if not source.exists():
-            raise FileNotFoundError(f"Run metadata missing: {source}")
-        res = json.loads(source.read_text(encoding="utf-8"))
-        with np.load(npz, allow_pickle=True) as data:
-            P, Y, patients = data["preds"], data["labels"], data["patients"]
-        acc, mae, bias, per, _, _ = B._metrics(P, Y)
-        bs = B.patient_bootstrap_ci(P, Y, patients, seed=seed)
-        res.update(acc=float(acc), mae=float(mae), bias=float(bias),
-                   pat_bias=bs["bias"], ci_lo=bs["ci"][0], ci_hi=bs["ci"][1],
-                   per_roi={r: dict(acc=per[r][0], mae=per[r][1], bias=per[r][2]) for r in ROI})
-        rj.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
-        # Historical training logs are preserved, not claimed as rerun training.
-        history = old_dir / "history.json"
-        if history.exists():
-            import shutil
-            shutil.copy2(history, rj.parent / "history.json")
-        print(f"[recompute from predictions] {run_dir.name}; training metadata/history reused")
+        npz = B.predict_saved_arm(model, mode, seed, run_dir)
+        res = json.loads(rj.read_text(encoding="utf-8"))
         res["npz"] = str(npz)
         return res
     B.train_arm(model, mode, seed, epochs, root, arm=arm)

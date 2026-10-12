@@ -30,3 +30,6 @@
 
 /Result_old/Phase2A/npz_sequences/*
 !/Result_old/Phase2A/npz_sequences/*.csv
+
+# Replayed patient-level predictions stay on the server
+/Result/**/*.npz

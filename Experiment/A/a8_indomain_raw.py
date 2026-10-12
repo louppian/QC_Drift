@@ -29,7 +29,7 @@ def main():
     ap.add_argument("--years", type=int, nargs="+", default=[2024, 2026], choices=[2024, 2026],
                     help="학습할 코호트. 한 연도만 주면 그 코호트만 학습·캐시(Δg 는 두 연도 모두 있어야 산출)")
     ap.add_argument("--overwrite", dest="skip_existing", action="store_false",
-                    help="기본은 test_preds.npz 있으면 학습 생략(skip-existing 기본 ON). 이 옵션이면 강제 재학습")
+                    help="기본은 best-val 가중치 재추론. 이 옵션이면 명시적으로 재학습")
     ap.set_defaults(skip_existing=True)
     args = ap.parse_args()
 

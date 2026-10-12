@@ -82,7 +82,7 @@ def main():
     ap.add_argument("--reps", type=int, nargs="+", default=[42, 1, 2])
     ap.add_argument("--half_seed", type=int, default=0)
     ap.add_argument("--overwrite", dest="skip_existing", action="store_false",
-                    help="기본은 test_preds.npz 있으면 학습 생략(skip-existing 기본 ON). 이 옵션이면 강제 재학습")
+                    help="기본은 best-val 가중치 재추론. 이 옵션이면 명시적으로 재학습")
     ap.set_defaults(skip_existing=True)
     args = ap.parse_args()
 

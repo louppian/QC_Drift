@@ -637,7 +637,8 @@ def _result_dir(run_dir):
 
 
 def _write_results(run_dir, name, mode, seed, TRAIN_Y, TEST_Y, df, epochs, best_epoch,
-                   best_val, acc, mae, bias, per, hist, P, Y, test_patients, bseed):
+                   best_val, acc, mae, bias, per, hist, P, Y, test_patients, bseed,
+                   prediction_dir=None, write_history=True):
     tail = [h["test_bias"] for h in hist if "test_bias" in h][-TAIL_EPOCHS:]
     bs = patient_bootstrap_ci(P, Y, test_patients, seed=bseed)
     res = dict(model=name, mode=mode, seed=seed, train_year=int(TRAIN_Y), test_year=int(TEST_Y),
@@ -649,10 +650,15 @@ def _write_results(run_dir, name, mode, seed, TRAIN_Y, TEST_Y, df, epochs, best_
                pat_bias=bs["bias"], ci_lo=bs["ci"][0], ci_hi=bs["ci"][1],
                per_roi={r: dict(acc=per[r][0], mae=per[r][1], bias=per[r][2]) for r in ROI})
     # checkpoint(run_dir) = 가중치(.pth) + npz.  Result = json(results/history, git 추적).
-    np.savez(run_dir / "test_preds.npz", preds=P, labels=Y, patients=test_patients)
+    prediction_dir = Path(prediction_dir) if prediction_dir is not None else run_dir
+    prediction_dir.mkdir(parents=True, exist_ok=True)
+    np.savez(prediction_dir / "test_preds.npz", preds=P, labels=Y, patients=test_patients)
     rdir = _result_dir(run_dir)
+    if prediction_dir.resolve() != rdir.resolve():
+        np.savez(rdir / "test_preds.npz", preds=P, labels=Y, patients=test_patients)
     (rdir / "results.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
-    (rdir / "history.json").write_text(json.dumps(hist, indent=1), encoding="utf-8")
+    if write_history:
+        (rdir / "history.json").write_text(json.dumps(hist, indent=1), encoding="utf-8")
     print(f"  ✔ final bias {bias:+.4f} | best_val_mae {best_val:.4f}@ep{best_epoch}")
 
 
@@ -665,33 +671,43 @@ DIRECTIONS = [("2024to2026", "fwd"), ("2026to2024", "rev")]
 
 
 def predict_saved_arm(name, mode, seed, run_dir):
-    """Recreate test predictions from best-val weights without training."""
+    """Replay the original best-val test evaluation. No baseline results are read."""
     run_dir = Path(run_dir)
     weight = run_dir / "best_val_model.pth"
     if not weight.exists():
-        raise FileNotFoundError(f"Missing saved predictions and weights: {weight}")
+        raise FileNotFoundError(f"Missing best-val checkpoint: {weight}")
     set_seed(seed)
-    df, _, _ = make_split(pd.read_csv(CSV_PATH), mode, seed)
-    df = gen_patterns(df, seed)
-    test = df[df.split == "test"]
+    df, train_year, test_year = make_split(pd.read_csv(CSV_PATH), mode, seed)
+    checkpoint = torch.load(weight, map_location=DEVICE, weights_only=False)
     if name == "dorga":
+        df = gen_patterns(df, seed)
         pi_g, pi_p = compute_priors(df)
         vit = load_mrm_vit(MRM_W, num_classes=C, in_chans=1)
         model = BrixiaViT512Dynamic(vit, num_regions=R, num_classes=C, num_patterns=K,
                                    proj_dim=PROJ_DIM, pi_global=pi_g, pi_patterns=pi_p,
                                    gnn_num_heads=4, gnn_dropout=0.1).to(DEVICE)
-        model.load_state_dict(torch.load(weight, map_location=DEVICE, weights_only=False)["state_dict"], strict=True)
-        loader = DataLoader(DorgaMaskDataset(test), batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
-        _, _, _, _, P, Y = evaluate_dorga(model, loader)
+        model.load_state_dict(checkpoint["state_dict"], strict=True)
+        test = df[df.split == "test"]
+        loader = DataLoader(DorgaMaskDataset(test), batch_size=BATCH_SIZE,
+                            shuffle=False, drop_last=False, num_workers=0, pin_memory=True)
+        acc, mae, bias, per, P, Y = evaluate_dorga(model, loader)
     else:
         model = load_private_scorer(name)(classes=C).to(DEVICE)
-        model.net.load_state_dict(torch.load(weight, map_location=DEVICE, weights_only=False)["state_dict"], strict=True)
-        loader = DataLoader(ScorerDataset(test), batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
-        _, _, _, _, P, Y = evaluate_scorer(model, loader)
-    np.savez(run_dir / "test_preds.npz", preds=P, labels=Y, patients=test[PATIENT_COL].to_numpy())
-    del model
+        model.net.load_state_dict(checkpoint["state_dict"], strict=True)
+        test = df[df.split == "test"]
+        loader = DataLoader(ScorerDataset(test), batch_size=BATCH_SIZE,
+                            shuffle=False, drop_last=False, num_workers=0, pin_memory=True)
+        acc, mae, bias, per, P, Y = evaluate_scorer(model, loader)
+    result_dir = _result_dir(run_dir)
+    _write_results(run_dir, name, mode, seed, train_year, test_year, df, EPOCHS,
+                   checkpoint["epoch"], checkpoint["best_val_mae"],
+                   acc, mae, bias, per, [], P, Y, test[PATIENT_COL].to_numpy(), seed,
+                   prediction_dir=result_dir, write_history=False)
+    print(f"[best-val replay] {weight} -> {result_dir}")
+    del model, checkpoint
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
+    return result_dir / "test_preds.npz"
 
 
 def train_arm(model, mode, seed, epochs, stage_root, arm=None):

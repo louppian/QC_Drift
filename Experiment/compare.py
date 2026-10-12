@@ -7,11 +7,13 @@ import csv
 import itertools
 import json
 import math
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PHASE1 = {'E1', 'E2', 'E3', 'E4', 'AppendixB', 'L'}
-METADATA = {'mrm', 'npz', 'image_path', 'timestamp', 'elapsed', 'elapsed_seconds'}
+METADATA = {'mrm', 'npz', 'image_path', 'timestamp', 'elapsed', 'elapsed_seconds', 'tail_bias'}
 KEY_COLUMNS = ('uid', 'patient_id', 'patient', 'pid', 'year', 'model', 'roi', 'ROI',
                'metric', 'feature', 'boundary', 'grade', 'mode', 'seed', 'fold', 'split', 'arm')
 
@@ -74,13 +76,39 @@ def main():
     ap.add_argument('--new', type=Path, default=ROOT/'Result')
     ap.add_argument('--atol', type=float, default=1e-6)
     ap.add_argument('--rtol', type=float, default=1e-5)
+    ap.add_argument('--run', action='store_true', help='Run Phase1 from saved best-val weights, then compare')
     args = ap.parse_args()
+    if args.run:
+        if args.old.resolve() != (ROOT/'Result_old').resolve() or args.new.resolve() != (ROOT/'Result').resolve():
+            ap.error('--run uses repository Result_old and Result')
+        tasks = [
+            'A/a1_structure.py', 'A/a2_label_image.py', 'A/a3_reproducibility.py',
+            'A/a4_cross.py', 'A/a5_indomain_matched.py', 'A/a6_positive_control.py',
+            'A/a7_negative_control.py', 'A/a8_indomain_raw.py',
+            'B/b1_summary.py', 'C/c1_confusion.py',
+        ]
+        for task in tasks:
+            print(f'RUN: {task}', flush=True)
+            completed = subprocess.run([sys.executable, str(ROOT/'Experiment'/task)], cwd=ROOT)
+            if completed.returncode:
+                print(f'STOP: {task} exited {completed.returncode}', file=sys.stderr)
+                return completed.returncode
+
     if args.atol < 0 or args.rtol < 0: ap.error('tolerances must be nonnegative')
     if not args.old.is_dir() or not args.new.is_dir(): ap.error('both directories must exist')
     old, new = collect(args.old), collect(args.new)
+    if not new:
+        print('No new Phase1 outputs. Run: python Experiment/compare.py --run', file=sys.stderr)
+        return 2
     if not old: ap.error('no Phase1 baseline files')
     failures = 0
     for rel in sorted(old.keys() | new.keys()):
+        if Path(rel).name == 'history.json':
+            print(f'TRAINING_LOG_NOT_REPLAYED: {rel}')
+            continue
+        if Path(rel).suffix == '.npz':
+            print(f'FRESH_PREDICTIONS: {rel}')
+            continue
         if rel not in old or rel not in new:
             # Image presence is informative, not a numeric reproduction verdict.
             missing = 'missing_new' if rel not in new else 'new_only'

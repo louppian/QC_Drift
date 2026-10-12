@@ -115,10 +115,16 @@ A/a9~a11은 이전 E0/특징 보조 코드이며 현재 core에 없는 API를 �
 B/b2는 기존 TODO 파일이며 계산을 수행하지 않는다. D는 보고서 종합 판단이며 대응 Python 파일이 없다.
 
 서버 QC_Drift 루트에서 실행한다. 기존 checkpoint 내부 이름(E1/E2/E3/E4/AppendixB)은 유지한다.
-A/a4~a8 기본 실행은 저장된 test_preds.npz로 평가 지표를 재계산한다.
-Result_old의 학습 설정·best-val 정보·history는 기존 기록을 재사용하며 재학습 검증을 뜻하지 않는다.
-NPZ가 없으면 best_val_model.pth에서 재추론하며, 둘 다 없으면 중단한다. --overwrite는 명시적인 재학습이다.
-Result_old는 기준값, Result는 새 산출물이다. L 분석은 현재 데이터에서 다시 계산한다.
+A/a4~a8 기본 실행은 best_val_model.pth를 읽어 원래 분할·모델·evaluate·_write_results로 재추론한다.
+기존 checkpoint의 가중치와 예측은 수정하지 않는다. 새 예측 NPZ와 지표는 Result에 생성한다.
+Result_old의 지표·학습 기록을 새 결과로 복사하지 않는다. --overwrite만 명시적인 재학습이다.
+학습 history와 tail_bias는 best-val 평가로 재현할 수 없으므로 compare에서 비검증 항목으로 표시한다.
+
+서버에서 전체 생성 후 비교:
+
+```bash
+python Experiment/compare.py --run
+```
 
 ```bash
 python Experiment/B/b1_summary.py

@@ -35,7 +35,7 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 _HERE = Path(__file__).resolve().parent          # Experiment/E
 _REPO = _HERE.parents[1]                          # Private repo 루트
 RUNS_DIR   = _REPO / "Result" / "E1" / "dorga"       # 입력: {24to26,26to24}_split{k}/results.json
-CKPT_E1    = _REPO / "checkpoint" / "E1" / "dorga"   # 입력: npz (환자 부트스트랩 CI 용)
+CKPT_E1    = _REPO / "Result" / "E1" / "dorga"   # 입력: npz (환자 부트스트랩 CI 용)
 RESULT_E1  = _REPO / "Result" / "E1"
 RESULT_MATCHED = _REPO / "Result" / "E2"           # Experiment 2 (matched in-domain, Δγ)
 RESULT_POS     = _REPO / "Result" / "E3"           # Experiment 3 (양성대조, 복원곡선)

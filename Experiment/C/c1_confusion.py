@@ -32,7 +32,7 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 
 _HERE = Path(__file__).resolve().parent
 _REPO = next(p for p in (_HERE, *_HERE.parents) if (p / "Experiment").is_dir())
-CKPT_E1   = _REPO / "checkpoint" / "E1" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
+CKPT_E1   = _REPO / "Result" / "E1" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
 VERDICT   = _REPO / "Result" / "A1_verdict.json"     # 입력: δ_corr + CI (보정 후)
 RESULT_E1 = _REPO / "Result" / "E1"
 ROI = ["RT", "LT", "RB", "LB"]                    # core.ROI = preds 열 순서
