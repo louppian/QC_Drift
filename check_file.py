@@ -33,7 +33,7 @@ for _s in (sys.stdout, sys.stderr):
         pass
 
 REPO = Path(__file__).resolve().parent
-EXP = REPO / "Experiment"
+EXP = REPO / "Experiment" / "Phase1"
 # core / e_common / Model 해석용 경로 (각 모듈도 자체 shim 이 있으나 진입점에서 보강)
 for _p in (str(REPO), str(EXP / "A_analysis"), str(REPO / "Model"), str(REPO / "Model" / "DORGA")):
     if _p not in sys.path:
@@ -64,17 +64,17 @@ print("STEP 1 — 학습·집계 모듈 import (11)")
 print("=" * 72)
 CORE = {}
 def _imp_core():
-    CORE["core"] = _import("Experiment/A_analysis/core.py", "Experiment.A_analysis.core")
+    CORE["core"] = _import("Experiment/Phase1/A_analysis/core.py", "Experiment.Phase1.A_analysis.core")
 check("core.py", _imp_core)
 for rel, name in [
-    ("Experiment/A_analysis/common.py", "Experiment.A_analysis.common"),
-    ("Experiment/A_analysis/a4_cross.py", "e1_cross"),
-    ("Experiment/A_analysis/a5_indomain_matched.py", "e2_indomain_matched"),
-    ("Experiment/A_analysis/a6_positive_control.py", "e3_positive_control"),
-    ("Experiment/A_analysis/a7_negative_control.py", "e4_negative_control"),
-    ("Experiment/A_analysis/a8_indomain_raw.py", "appendixB_indomain_raw"),
-    ("Experiment/B_summary/b1_summary.py", "e_summary"),
-    ("Experiment/B_summary/b2_feature_summary.py", "l_summary"),
+    ("Experiment/Phase1/A_analysis/common.py", "Experiment.Phase1.A_analysis.common"),
+    ("Experiment/Phase1/A_analysis/a4_cross.py", "e1_cross"),
+    ("Experiment/Phase1/A_analysis/a5_indomain_matched.py", "e2_indomain_matched"),
+    ("Experiment/Phase1/A_analysis/a6_positive_control.py", "e3_positive_control"),
+    ("Experiment/Phase1/A_analysis/a7_negative_control.py", "e4_negative_control"),
+    ("Experiment/Phase1/A_analysis/a8_indomain_raw.py", "appendixB_indomain_raw"),
+    ("Experiment/Phase1/B_summary/b1_summary.py", "e_summary"),
+    ("Experiment/Phase1/B_summary/b2_feature_summary.py", "l_summary"),
 ]:
     check(name, lambda rel=rel, name=name: _import(rel, name))
 
@@ -82,11 +82,11 @@ for rel, name in [
 print("\n" + "=" * 72)
 print("STEP 2 — 분석 코드 구문검사")
 print("=" * 72)
-for rel in ["Experiment/A_analysis/a9_recompute_bestval.py",
-            "Experiment/A_analysis/a10_features.py",
-            "Experiment/A_analysis/a11_features_matched.py",
-            "Experiment/A_analysis/a1_structure.py",
-            "Experiment/A_analysis/a3_reproducibility.py"]:
+for rel in ["Experiment/Phase1/A_analysis/a9_recompute_bestval.py",
+            "Experiment/Phase1/A_analysis/a10_features.py",
+            "Experiment/Phase1/A_analysis/a11_features_matched.py",
+            "Experiment/Phase1/A_analysis/a1_structure.py",
+            "Experiment/Phase1/A_analysis/a3_reproducibility.py"]:
     check(f"syntax {Path(rel).name}",
           lambda rel=rel: ast.parse((REPO / rel).read_text(encoding="utf-8")))
 
