@@ -1,8 +1,9 @@
 # ── 데이터셋 (대용량) — CXR 내용은 무시하되 스크립트(.py)는 추적 ──
-#   무시: 2024 CXR/ · 2026 CXR/ · Merged/ · unified_labels.csv
+#   무시: 2024 CXR/ · 2026 CXR/ · Merged/
 #   추적: build_dataset.py · inha_dataset.py (CXR 바로 아래 .py)
 /CXR/*
 !/CXR/*.py
+!/CXR/*.csv
 
 # ── 학습 가중치 (재생성 가능, 76GB) — 위치 불문 전역 무시 ──
 *.pth
@@ -20,7 +21,8 @@
 *.pyc
 
 # ── Phase2A 판독 NPZ (환자 영상 5.2GB, make_npz.py 로 재생성) ──
-/Result/Phase2A/npz_sequences/
+/Result/Phase2A/npz_sequences/*
+!/Result/Phase2A/npz_sequences/*.csv
 
 # Local comparison reports
 /document/server_file_comparison.md
