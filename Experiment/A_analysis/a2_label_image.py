@@ -18,9 +18,9 @@ from Experiment.A_analysis import core as B  # noqa: E402
 
 REPO = Path(B._REPO)
 ROI = ["RT", "LT", "RB", "LB"]
-RESULT_L = REPO / "Result" / "A_analysis" / "a2_label_image"
-FEATURES_PATH = RESULT_L / "l2_features.csv"
-AUC_PATH = RESULT_L / "l2_auc.csv"
+RESULT_L = REPO / "Result" / "A_analysis"
+FEATURES_PATH = RESULT_L / "a2_label_image_features.csv"
+AUC_PATH = RESULT_L / "a2_label_image_auc.csv"
 
 # CLI 대신 아래 상수를 직접 수정한다.
 REBUILD = True

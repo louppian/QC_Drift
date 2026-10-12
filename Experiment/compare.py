@@ -76,10 +76,10 @@ SPECIAL = {
  'L/roi_features_matched.csv':'A_analysis/a11_features_matched/roi_features_matched.csv',
  'L/L3_matched_summary.txt':'A_analysis/a11_features_matched/L3_matched_summary.txt',
  'L/feature_summary.csv':'B_summary/b2_feature_summary/feature_summary.csv',
- 'L/l1_structure.csv':'A_analysis/a1_structure/l1_structure.csv',
- 'L/l2_features.csv':'A_analysis/a2_label_image/l2_features.csv',
- 'L/l2_auc.csv':'A_analysis/a2_label_image/l2_auc.csv',
- 'L/l4_reproducibility.csv':'A_analysis/a3_reproducibility/l4_reproducibility.csv',
+ 'L/l1_structure.csv':'A_analysis/a1_structure.csv',
+ 'L/l2_features.csv':'A_analysis/a2_label_image_features.csv',
+ 'L/l2_auc.csv':'A_analysis/a2_label_image_auc.csv',
+ 'L/l4_reproducibility.csv':'A_analysis/a3_reproducibility.csv',
  'A1_verdict.json':'B_summary/b1_summary/A1_verdict.json',
  'E1/e1_summary.csv':'B_summary/b1_summary/e1_summary.csv',
  'E2/e2_summary.csv':'B_summary/b1_summary/e2_summary.csv',
@@ -101,6 +101,8 @@ def collect(base):
             key = '/'.join([reverse_tasks[parts[1]], *parts[2:]])
         elif parts[0] in PHASE1 or rel == 'A1_verdict.json':
             key = rel
+        elif parts[0] in {'A_analysis', 'B_summary', 'C_figures'} and path.suffix.lower() in {'.csv', '.json'}:
+            raise ValueError(f'Unmapped result file: {path}')
         else:
             continue
         if key in files: raise ValueError(f'Duplicate old/new layout for {key} in {base}')
@@ -133,7 +135,10 @@ def main():
 
     if args.atol < 0 or args.rtol < 0: ap.error('tolerances must be nonnegative')
     if not args.old.is_dir() or not args.new.is_dir(): ap.error('both directories must exist')
-    old, new = collect(args.old), collect(args.new)
+    try:
+        old, new = collect(args.old), collect(args.new)
+    except ValueError as exc:
+        ap.error(str(exc))
     if not new:
         print('No new Phase1 outputs. Run: python Experiment/compare.py --run', file=sys.stderr)
         return 2

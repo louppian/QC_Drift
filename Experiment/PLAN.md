@@ -73,10 +73,10 @@
 
 | 레벨 | 계산 | 산출 |
 |---|---|---|
-| **L1** 구조·분포 | 환자·영상수, 시퀀스길이, 평균등급, 등급 0~4 비율 (labels.csv) | `Result/A_analysis/a1_structure/l1_structure.csv` |
-| **L2** 라벨-영상 | ROI **6-특징**[1차 4(mean·median·uniformity·entropy) + GLRLM SRE + GLSZM SAE]. 그레이 Ng=16, ROI [min,max] 양자화, GLRLM 4방향 합산, GLSZM 8-연결. 인접등급 방향무관 AUC=max(a,1−a). 경계 3→4, 귀무 max 순열 1,500회 보정 | `Result/A_analysis/a2_label_image/{l2_features,l2_auc}.csv` |
+| **L1** 구조·분포 | 환자·영상수, 시퀀스길이, 평균등급, 등급 0~4 비율 (labels.csv) | `Result/A_analysis/a1_structure.csv` |
+| **L2** 라벨-영상 | ROI **6-특징**[1차 4(mean·median·uniformity·entropy) + GLRLM SRE + GLSZM SAE]. 그레이 Ng=16, ROI [min,max] 양자화, GLRLM 4방향 합산, GLSZM 8-연결. 인접등급 방향무관 AUC=max(a,1−a). 경계 3→4, 귀무 max 순열 1,500회 보정 | `Result/A_analysis/a2_label_image_{features,auc}.csv` |
 | **L3** 방향반전 분해 | E1 예측 → δ·γ (모델 의존) | (= E1) |
-| **L4** 재현성 | 재측정 2세션 → 자기일치 ACC, weighted κ(quadratic), Wilcoxon | `Result/A_analysis/a3_reproducibility/l4_reproducibility.csv` |
+| **L4** 재현성 | 재측정 2세션 → 자기일치 ACC, weighted κ(quadratic), Wilcoxon | `Result/A_analysis/a3_reproducibility.csv` |
 
 ## 6. 평가·통계
 
@@ -111,7 +111,7 @@ python Experiment/compare.py
 
 Experiment와 Result는 같은 상위 구조를 쓴다.
 
-- `A_analysis`: a1~a11 분석. Result 안에서도 실행 파일 이름별 하위 폴더에 저장한다.
+- `A_analysis`: a1~a11 분석. a1~a3 CSV는 Result/A_analysis 바로 아래에 코드 번호·이름으로 저장한다. a4 이후 다중 실행 산출은 해당 분석 하위 폴더에 저장한다.
 - `B_summary`: b1_summary 판정·집계, b2_feature_summary 특징 집계.
 - `C_figures`: c1_confusion 혼동행렬.
 
