@@ -23,10 +23,10 @@ dataset·train loop·loss·eval·bootstrap 을 제공하고, E1~E4 드라이버�
 
 경로는 아래 CONFIG 상수만 서버 실경로로 맞추면 됨.
 독립 실행(3모델 cross 일괄):
-  python Experiment/core.py                     # 3모델 × 6 arm → checkpoint/E
-  python Experiment/core.py --models bsnet pafe # 일부만
-  python Experiment/core.py --skip-existing     # 중단 후 이어서
-(단일 실험은 E1~E4 드라이버 사용: Experiment/E/e1_cross.py 등)
+  python Experiment/A/core.py                     # 3모델 × 6 arm → checkpoint/E
+  python Experiment/A/core.py --models bsnet pafe # 일부만
+  python Experiment/A/core.py --skip-existing     # 중단 후 이어서
+(단일 실험은 E1~E4 드라이버 사용: Experiment/A/a4_cross.py 등)
 """
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ from tqdm import tqdm
 
 # ── DORGA 모델·손실: Private repo 자립 코드 ──
 _HERE = os.path.dirname(os.path.abspath(__file__))          # Experiment
-_REPO = os.path.dirname(_HERE)                              # Private repo 루트
+_REPO = os.path.dirname(os.path.dirname(_HERE))                              # Private repo 루트
 _MODEL_ROOT = os.path.join(_REPO, "Model")                 # Model (BSNet/PAFE scorer 경로 기준)
 _DORGA_DIR = os.path.join(_MODEL_ROOT, "DORGA")            # Model/DORGA (DORGA.py·scorer.py)
 for _p in (_HERE, _MODEL_ROOT, _DORGA_DIR):                # _HERE = Experiment (e_common 등 형제모듈)
@@ -66,7 +66,7 @@ from scorer import (                                                # noqa: E402
 )
 
 # ═══════════════ 경로 — 서버 기준. 여기만 맞게 수정 ═══════════════
-BASE      = "/shared/home/mai/JeongGeon/Private"
+BASE      = _REPO
 MERGED    = Path(f"{BASE}/CXR/Merged")               # labels.csv image_path 의 기준 폴더
 IMG_DIR   = Path(f"{BASE}/CXR/Merged/images_normalize")   # ★ seg+STN 정렬 완료 이미지 <uid>.png
 MASK_DIR  = Path(f"{BASE}/CXR/Merged/masks")              # ★ 정렬 마스크 <uid>.png
@@ -662,6 +662,36 @@ def _write_results(run_dir, name, mode, seed, TRAIN_Y, TEST_Y, df, epochs, best_
 DEFAULT_SEEDS = [1, 2, 42]
 DEFAULT_MODELS = ["dorga", "bsnet", "pafe"]
 DIRECTIONS = [("2024to2026", "fwd"), ("2026to2024", "rev")]
+
+
+def predict_saved_arm(name, mode, seed, run_dir):
+    """Recreate test predictions from best-val weights without training."""
+    run_dir = Path(run_dir)
+    weight = run_dir / "best_val_model.pth"
+    if not weight.exists():
+        raise FileNotFoundError(f"Missing saved predictions and weights: {weight}")
+    set_seed(seed)
+    df, _, _ = make_split(pd.read_csv(CSV_PATH), mode, seed)
+    df = gen_patterns(df, seed)
+    test = df[df.split == "test"]
+    if name == "dorga":
+        pi_g, pi_p = compute_priors(df)
+        vit = load_mrm_vit(MRM_W, num_classes=C, in_chans=1)
+        model = BrixiaViT512Dynamic(vit, num_regions=R, num_classes=C, num_patterns=K,
+                                   proj_dim=PROJ_DIM, pi_global=pi_g, pi_patterns=pi_p,
+                                   gnn_num_heads=4, gnn_dropout=0.1).to(DEVICE)
+        model.load_state_dict(torch.load(weight, map_location=DEVICE, weights_only=False)["state_dict"], strict=True)
+        loader = DataLoader(DorgaMaskDataset(test), batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
+        _, _, _, _, P, Y = evaluate_dorga(model, loader)
+    else:
+        model = load_private_scorer(name)(classes=C).to(DEVICE)
+        model.net.load_state_dict(torch.load(weight, map_location=DEVICE, weights_only=False)["state_dict"], strict=True)
+        loader = DataLoader(ScorerDataset(test), batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
+        _, _, _, _, P, Y = evaluate_scorer(model, loader)
+    np.savez(run_dir / "test_preds.npz", preds=P, labels=Y, patients=test[PATIENT_COL].to_numpy())
+    del model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 
 def train_arm(model, mode, seed, epochs, stage_root, arm=None):

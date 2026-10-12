@@ -67,7 +67,7 @@
 | **E4** 음성대조 | β=0, 학습량 비대칭 train_frac ∈ {1.0, 0.5, 0.25}. reps 42·1·2. δ_spurious 누출 | `checkpoint/E4/` + `e4_summary.json` |
 | **부록 B** in-domain raw | E2와 동일하나 **raw**(전 환자, 정합 전). Δg_raw. 수축분 = Δg_raw − Δg_matched | `checkpoint/AppendixB/dorga/` + `appb_summary.json` |
 
-판정: δ_corr = δ_obs + Δg/2 (E3 matched). `E/summary.py` → `A1_verdict.json` (+CI).
+판정: δ_corr = δ_obs + Δg/2 (E3 matched). `B/b1_summary.py` → `A1_verdict.json` (+CI).
 
 ## 5. L 분석 (학습 무관: L1·L2·L4)
 
@@ -91,17 +91,42 @@
 ## 7. 실행
 
 ```bash
-python Experiment/E/e1_cross.py                       # fwd·rev × split 1~5 (10 arm)
-python Experiment/E/e1_cross.py --mode fwd --split 1  # 특정 방향·split 만
-python Experiment/E/e2_indomain_matched.py --folds 5 --init_seeds 42 1 2  # E2 matched
-python Experiment/E/e3_positive_control.py --year 2024 --betas 0 0.25 0.5 1.0 --reps 42 1 2  # E3 양성
-python Experiment/E/e4_negative_control.py --year 2024 --fracs 1.0 0.5 0.25 --reps 42 1 2    # E4 음성
-python Experiment/E/appendixB_indomain_raw.py --folds 5 --init_seeds 42 1 2  # 부록 B raw
+python Experiment/A/a4_cross.py                       # fwd·rev × split 1~5 (10 arm)
+python Experiment/A/a4_cross.py --mode fwd --split 1  # 특정 방향·split 만
+python Experiment/A/a5_indomain_matched.py --folds 5 --init_seeds 42 1 2  # E2 matched
+python Experiment/A/a6_positive_control.py --year 2024 --betas 0 0.25 0.5 1.0 --reps 42 1 2  # E3 양성
+python Experiment/A/a7_negative_control.py --year 2024 --fracs 1.0 0.5 0.25 --reps 42 1 2    # E4 음성
+python Experiment/A/a8_indomain_raw.py --folds 5 --init_seeds 42 1 2  # 부록 B raw
 
-python Experiment/L/l1_structure.py
-python Experiment/L/l2_label_image.py
-python Experiment/L/l4_reproducibility.py --rr <reread.csv>
+python Experiment/A/a1_structure.py
+python Experiment/A/a2_label_image.py
+python Experiment/A/a3_reproducibility.py --cxr_root "CXR/2026 CXR"
 
-python Experiment/E/summary.py    # E1~E5 집계 + δ_corr 판정 → Result/A1_verdict.json
-python check_value_l.py ; python check_value_e.py ; python check_value_a.py
+python Experiment/B/b1_summary.py    # E1~E5 집계 + δ_corr 판정 → Result/A1_verdict.json
+python Experiment/compare.py
 ```
+
+
+## QC_Drift 실행 구조
+
+A/a1~a8은 독립 분석·실험, B/b1은 E 결과 집계, C/c1은 그림이다.
+core.py·train.py·common.py는 A 폴더에 있다.
+A/a9~a11은 이전 E0/특징 보조 코드이며 현재 core에 없는 API를 사용하므로 주 재현 실행 대상이 아니다.
+B/b2는 기존 TODO 파일이며 계산을 수행하지 않는다. D는 보고서 종합 판단이며 대응 Python 파일이 없다.
+
+서버 QC_Drift 루트에서 실행한다. 기존 checkpoint 내부 이름(E1/E2/E3/E4/AppendixB)은 유지한다.
+A/a4~a8 기본 실행은 저장된 test_preds.npz로 평가 지표를 재계산한다.
+Result_old의 학습 설정·best-val 정보·history는 기존 기록을 재사용하며 재학습 검증을 뜻하지 않는다.
+NPZ가 없으면 best_val_model.pth에서 재추론하며, 둘 다 없으면 중단한다. --overwrite는 명시적인 재학습이다.
+Result_old는 기준값, Result는 새 산출물이다. L 분석은 현재 데이터에서 다시 계산한다.
+
+```bash
+python Experiment/B/b1_summary.py
+python Experiment/C/c1_confusion.py
+python Experiment/compare.py
+```
+
+compare.py는 Phase1의 E1/E2/E3/E4/AppendixB/L 및 A1_verdict.json을 비교한다.
+CSV/JSON의 누락과 수치 차이는 실패로 반환한다. 기본 허용오차는 atol=1e-6, rtol=1e-5이다.
+새 항목도 차이로 표시하며 기준에 없다고 자동 통과시키지 않는다. 이미지·텍스트는 별도 표시한다.
+환자 NPZ·가중치를 읽어 평가하는 실험은 서버에서만 실행한다.

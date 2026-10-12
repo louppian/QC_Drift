@@ -18,12 +18,15 @@ import os, sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "E"))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # 같은 폴더 L3_features
-import e_common as A
-import l3_features as L               # features(), l3_explain(), R4 재사용
 
-IMG_ORIG = r"D:\MICCAI2026\inhauh\image_original"
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
+from Experiment.A import a10_features as L               # features(), l3_explain(), R4 재사용
+
+IMG_ORIG = str(Path(A.B._REPO) / "CXR/Merged/images_original")
 
 
 def build_matched():

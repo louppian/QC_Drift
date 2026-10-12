@@ -16,9 +16,12 @@ E4 — 반합성 음성 대조 (학습량 비대칭, 누출곡선)   [draft §5.
 import argparse, os as _os, sys as _sys
 import numpy as np
 import pandas as pd
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "E"))
-import e_common as A
-from e3_positive_control import two_halves         # 동일 정합 half 분할 재사용
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
+from Experiment.A.a6_positive_control import two_halves         # 동일 정합 half 분할 재사용
 
 
 def degraded_splitter(year, train_half, test_half, train_frac, val_seed):

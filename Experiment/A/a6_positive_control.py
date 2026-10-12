@@ -16,8 +16,11 @@ E3 — 반합성 양성 대조 (β 오프셋 주입, 복원곡선)   [draft §5.
 import argparse, os as _os, sys as _sys
 import numpy as np
 import pandas as pd
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "E"))
-import e_common as A
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
 
 
 def two_halves(df, year, seed):

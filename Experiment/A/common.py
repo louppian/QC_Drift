@@ -30,14 +30,17 @@ for _s in (sys.stdout, sys.stderr):
     try: _s.reconfigure(encoding="utf-8", errors="replace")
     except Exception: pass
 
-# ── 학습 코어: Private Experiment/core.py (舊 dorga_train_2026to2024.py 자립 대체) ──
+# ── 학습 코어: Private Experiment/A/core.py (舊 dorga_train_2026to2024.py 자립 대체) ──
 _HERE = os.path.dirname(os.path.abspath(__file__))     # Experiment/E
 _EXP_ROOT = os.path.dirname(_HERE)                     # Experiment
 _REPO = os.path.dirname(_EXP_ROOT)                     # Private repo 루트
 if _EXP_ROOT not in sys.path:
     sys.path.insert(0, _EXP_ROOT)
 
-import core as B                                       # noqa: E402  학습 엔진(split/dataset/train/eval)
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import core as B                                       # noqa: E402  학습 엔진(split/dataset/train/eval)
 
 # early stopping: val MAE 가 10 에폭 개선 없으면 중단 (전 arm 공통)
 EARLYSTOP = 10
@@ -153,15 +156,36 @@ def match_two_cohorts(df, seed, n_bins=5):
 def run_arm(mode, splitter, seed, epochs, root=None, model="dorga", arm=None, skip_existing=True):
     """splitter 등록 후 core.train_arm 실행 (core 가 사전정렬 이미지를 디스크에서 로드).
     arm 주면 run_dir 이름을 그걸로(미지정 시 {mode}_s{seed}). results dict(+ npz) 반환.
-    skip_existing=True 면 test_preds.npz + results.json 이 이미 있으면 학습 생략하고 재사용(재개용)."""
+    skip_existing=True: saved NPZ metrics are recomputed; training history/metadata are reused from Result_old."""
     register(mode, splitter)
     root = Path(root)
     run_dir = root / (arm if arm else f"{mode}_s{seed}")     # checkpoint 하 arm 디렉터리
     npz = run_dir / "test_preds.npz"                         # npz 는 checkpoint
     rj = B._result_dir(run_dir) / "results.json"             # json 은 Result
-    if skip_existing and npz.exists() and rj.exists():
-        print(f"[skip] {run_dir.name} (test_preds.npz 존재 → 학습 생략)")
-        res = json.loads(rj.read_text(encoding="utf-8")); res["npz"] = str(npz)
+    if skip_existing:
+        if not npz.exists():
+            B.predict_saved_arm(model, mode, seed, run_dir)
+        # Recompute prediction-derived metrics; never copy old metric values.
+        old_dir = Path(_REPO) / "Result_old" / run_dir.relative_to(Path(_REPO) / "checkpoint")
+        source = old_dir / "results.json"
+        if not source.exists():
+            raise FileNotFoundError(f"Run metadata missing: {source}")
+        res = json.loads(source.read_text(encoding="utf-8"))
+        with np.load(npz, allow_pickle=True) as data:
+            P, Y, patients = data["preds"], data["labels"], data["patients"]
+        acc, mae, bias, per, _, _ = B._metrics(P, Y)
+        bs = B.patient_bootstrap_ci(P, Y, patients, seed=seed)
+        res.update(acc=float(acc), mae=float(mae), bias=float(bias),
+                   pat_bias=bs["bias"], ci_lo=bs["ci"][0], ci_hi=bs["ci"][1],
+                   per_roi={r: dict(acc=per[r][0], mae=per[r][1], bias=per[r][2]) for r in ROI})
+        rj.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
+        # Historical training logs are preserved, not claimed as rerun training.
+        history = old_dir / "history.json"
+        if history.exists():
+            import shutil
+            shutil.copy2(history, rj.parent / "history.json")
+        print(f"[recompute from predictions] {run_dir.name}; training metadata/history reused")
+        res["npz"] = str(npz)
         return res
     B.train_arm(model, mode, seed, epochs, root, arm=arm)
     res = json.loads(rj.read_text(encoding="utf-8")); res["npz"] = str(npz)

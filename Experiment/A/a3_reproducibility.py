@@ -14,9 +14,9 @@ L4 — 판독자 재현성 (draft §4.5 표5) → Result/L/l4_reproducibility.cs
 
 데이터: <cxr_root>/{4_재측정,1_독립,2_완전동일}/<case>/result{1,2,3}.txt
   컬럼 seq, inference_*, user_edit_*, posthoc_* (모두 해부학 순서 [RT,LT,RB,LB])
-  서버: /shared/home/mai/JeongGeon/Private/CXR/2026 CXR
+  서버: /shared/home/mai/JeongGeon/QC_Drift/CXR/2026 CXR
 
-실행: python Experiment/L/l4_reproducibility.py [--cxr_root <2026 CXR 폴더>]
+실행: python Experiment/A/a3_reproducibility.py [--cxr_root <2026 CXR 폴더>]
 """
 import argparse
 import csv
@@ -39,7 +39,7 @@ QUAD = ["RT", "LT", "RB", "LB"]
 EDT = [f"user_edit_{r}" for r in QUAD]
 INF = [f"inference_{r}" for r in QUAD]
 OUT = REPO / "Result" / "L" / "l4_reproducibility.csv"
-CXR_DEFAULT = "/shared/home/mai/JeongGeon/Private/CXR/2026 CXR"
+CXR_DEFAULT = str(REPO / "CXR/2026 CXR")
 REMEASURE = "4_재측정"                         # 재측정(자기일치)
 ANALYSIS = ["1_독립", "2_완전동일"]              # 분석셋(모델-판독자, 46명·587장)
 # md 표5 (self-ACC, weighted κ, 모델-판독자)

@@ -17,8 +17,8 @@ check_value_{l,e,a}.py 는 이 산출물을 draft md 값과 '비교만' 한다(�
   Result/A1_verdict.json     δ_obs·γ·Δγ·δ_corr+CI (최종 판정)
 
 실행:
-  python Experiment/E/summary.py
-  python Experiment/E/summary.py --runs /path/to/Result/E1/dorga
+  python Experiment/B/b1_summary.py
+  python Experiment/B/b1_summary.py --runs /path/to/Result/E1/dorga
 """
 import argparse
 import csv

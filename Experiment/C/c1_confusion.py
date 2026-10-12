@@ -14,7 +14,7 @@ ROI 헤더는 **정합 보정 후** 값 δ_corr = δ_obs + Δγ_matched/2 와 �
        Result/A1_verdict.json  (delta_corrected: δ_corr·CI)
 산출:  Result/E1/e1_confusion_quadrant.png
 
-실행:  python Experiment/E/e1_fig_confusion.py
+실행:  python Experiment/C/c1_confusion.py
 """
 import json
 import sys

@@ -25,13 +25,16 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from scipy import ndimage as ndi
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "E"))
-import e_common as A
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
 
 OUT = A.RESULT_OUT / "L"                # L 산출(csv·txt)은 Result/L (git 추적)
 OUT.mkdir(parents=True, exist_ok=True)
-IMG24 = r"D:\MICCAI2026\inhauh\image_normalize"
-MSK24 = r"D:\MICCAI2026\inhauh\mask_normalize"
+IMG24 = str(Path(A.B._REPO) / "CXR/Merged/images_normalize")
+MSK24 = str(Path(A.B._REPO) / "CXR/Merged/masks")
 R4 = ["RT", "RB", "LT", "LB"]          # split4 순서
 CSV = pd.read_csv(A.MANIFEST)
 

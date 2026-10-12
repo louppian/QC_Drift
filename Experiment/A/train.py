@@ -33,7 +33,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 # ───────────────────────── 경로 ─────────────────────────
-BASE = "/shared/home/mai/JeongGeon/Private"
+BASE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 IMG_DIR = f"{BASE}/CXR/Merged/images_normalize"
 MASK_DIR = f"{BASE}/CXR/Merged/masks"
 CSV_PATH = f"{BASE}/CXR/Merged/labels.csv"
@@ -43,7 +43,8 @@ OUT_DIR = f"{BASE}/Model/checkpoints"
 if MODEL_ROOT not in sys.path:
     sys.path.insert(0, MODEL_ROOT)
 
-from common import CLASSES, SCORE_COLS, metrics          # noqa: E402
+sys.path.insert(0, BASE)
+from Model.common import CLASSES, SCORE_COLS, metrics          # noqa: E402
 
 # ───────────────────────── 모델 레지스트리 ─────────────────────────
 # 폴더명만 등록한다. 세 폴더의 scorer.py 는 파일명이 같아 일반 import 가

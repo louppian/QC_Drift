@@ -17,8 +17,11 @@ cross(2024→2026, 2026→2024)를 양방향 학습·평가해 방향별 편향 
 """
 import argparse, os as _os, sys as _sys
 import numpy as np
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "E"))
-import e_common as A
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
 
 FOLDS = 5
 DIRS = {"fwd": (2024, 2026, "24to26"), "rev": (2026, 2024, "26to24")}   # 이름: train연도→test연도
@@ -43,6 +46,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", nargs="+", default=["fwd", "rev"], choices=["fwd", "rev"])
     ap.add_argument("--split", type=int, nargs="+", default=[1, 2, 3, 4, 5], choices=[1, 2, 3, 4, 5])
+    ap.add_argument("--overwrite", action="store_true", help="Explicitly retrain instead of reusing saved predictions/weights")
     args = ap.parse_args()
 
     root = A.A1_OUT / "E1" / "dorga"                     # checkpoint/E1/dorga
@@ -52,7 +56,8 @@ def main():
             arm = f"{tag}_split{k}"                       # 예: 24to26_split1
             A.register(arm, cross_val_fold(ty, ey, k - 1))
             print(f"\n### E1 {m} {arm} (train {ty} 80% / val 20%(fold {k}) / test {ey} 전체)")
-            A.B.run_one_dorga(arm, k, A.B.EPOCHS, root, arm=arm)
+            A.run_arm(arm, cross_val_fold(ty, ey, k - 1), k, A.B.EPOCHS, root,
+                      arm=arm, skip_existing=not args.overwrite)
     print("\nE1 완료:", root)
 
 

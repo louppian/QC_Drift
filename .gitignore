@@ -27,3 +27,6 @@
 # Local comparison reports
 /document/server_file_comparison.md
 /document/server_file_comparison.json
+
+/Result_old/Phase2A/npz_sequences/*
+!/Result_old/Phase2A/npz_sequences/*.csv

@@ -3,12 +3,16 @@
 베이스 파이프라인(dorga_train_2026to2024) 그대로 사용 → 레시피 일치.
 환자 부트스트랩 95% + Bonferroni(m=5, 99%) CI."""
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "E"))
+
+
+from pathlib import Path
 import numpy as np, pandas as pd, torch
-import e_common as A
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import common as A
 B = A.B
-E0 = r"D:\npjDM2026\runs\E0"
+E0 = str(Path(B._REPO) / "checkpoint/E0")
 SEEDS = [1, 2, 42]
 ROI = B.ROI                       # native ["RT","RB","LT","LB"]
 DISP = ["RT", "LT", "RB", "LB"]

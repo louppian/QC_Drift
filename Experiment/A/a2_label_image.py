@@ -9,8 +9,11 @@ import pandas as pd
 from scipy.ndimage import label as connected_components
 from scipy.stats import rankdata
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import core as B  # noqa: E402
+
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
+from Experiment.A import core as B  # noqa: E402
 
 
 REPO = Path(B._REPO)
