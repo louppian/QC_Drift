@@ -1,21 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""
-A1 검증 실험 — 공용 코어 (draft.md §5.2 / A1_검증실험계획 §2·§3)
-
-전략: 무거운 DORGA 학습 파이프라인(dataset·model·train loop·bootstrap)은
-`dorga_train_2026to2024.py`(4-arm bias-direction 드라이버)에 이미 있으므로,
-그 모듈을 그대로 import 해서 코어로 쓴다. 우리가 바꾸는 건 **split 생성(make_split)뿐**이다.
-
-  - B.run_one(mode, seed, epochs, cache2026, root) 는 내부에서
-        df = read_csv(MANIFEST); df, ty, ey = make_split(df, mode, seed)
-    를 호출한다. 우리는 B.make_split 을 디스패처로 교체(monkeypatch)해서,
-    등록된 mode 이름에 대해 우리의 커스텀 split(+라벨 주입)을 반환하게 한다.
-  - 커스텀 splitter 는 df 의 'split' 컬럼(train/val/test)을 채우고,
-    필요하면 ROI 라벨 컬럼을 그 자리에서 수정(E3/E4 주입)한 뒤 반환한다.
-    run_one 하류의 gen_patterns/compute_priors/loss 는 전부 그 df 를 그대로 쓴다.
-
-이 파일은 실행 진입점이 아니다. E1~E4 드라이버가 import 해서 쓴다.
-"""
+"""Checkpoint prediction aggregation, CSV serialization, and original statistical helpers."""
 from __future__ import annotations
 import os, sys, json, importlib.util
 from pathlib import Path
@@ -40,41 +24,36 @@ if _EXP_ROOT not in sys.path:
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A_analysis import core as B                                       # noqa: E402  학습 엔진(split/dataset/train/eval)
-
-# early stopping: val MAE 가 10 에폭 개선 없으면 중단 (전 arm 공통)
+# Core is loaded only by legacy model code, never by checkpoint CSV aggregation.
+class _LazyCore:
+    def __getattr__(self, name):
+        from Experiment.A_analysis import core
+        return getattr(core, name)
+B = _LazyCore()
 EARLYSTOP = 10
-B.EARLYSTOP_PATIENCE = EARLYSTOP
+ROI = ["RT", "LT", "RB", "LB"]
+C = 5
+MANIFEST = str(Path(_REPO) / "CXR/Merged/labels.csv")
+A1_OUT = Path(_REPO) / "checkpoint"
+RESULT_OUT = Path(_REPO) / "Result"
+_SPLITTERS = {}
 
-# 자주 쓰는 심볼 재노출 — ROI 순서는 core 기준 [RT, LT, RB, LB] 강제
-ROI      = B.ROI                 # ["RT","LT","RB","LB"]
-C        = B.C                   # 5
-MANIFEST = B.CSV_PATH            # labels.csv (uid, patient_id, RT,LT,RB,LB, image_path)
-DEVICE   = B.DEVICE
-A1_OUT   = Path(_REPO) / "checkpoint"        # raw(가중치·npz) 루트 → checkpoint/ (gitignore)
-A1_OUT.mkdir(parents=True, exist_ok=True)
-RESULT_OUT = Path(_REPO) / "Result"          # json·summary 루트 → Result/ (git 추적)
-RESULT_OUT.mkdir(parents=True, exist_ok=True)
-
-# ── make_split 몽키패치: mode 이름 → 등록된 splitter ─────────────
-_ORIG_make_split = B.make_split
-_SPLITTERS: dict = {}             # mode(str) -> fn(df, seed) -> (df_split, train_year, test_year)
 
 def _prep(df):
     """core labels.csv(patient_id 24_/26_ 접두어) → 구 splitter 호환 year·patient 파생."""
     if "year" not in df.columns:
         df = df.copy()
-        df["patient"] = df[B.PATIENT_COL]
-        df["year"] = df[B.PATIENT_COL].astype(str).str[:2].map({"24": 2024, "26": 2026})
+        df["patient"] = df["patient_id"]
+        df["year"] = df["patient_id"].astype(str).str[:2].map({"24": 2024, "26": 2026})
     return df
 
 def _dispatch(df, mode, seed):
     df = _prep(df)
     if mode in _SPLITTERS:
         return _SPLITTERS[mode](df, seed)
-    return _ORIG_make_split(df, mode, seed)
+    return B.make_split(df, mode, seed)
 
-B.make_split = _dispatch
+
 
 def register(mode: str, fn):
     """mode 이름에 커스텀 splitter 를 건다. run_one(mode,...) 가 이걸 타게 된다."""
@@ -154,22 +133,12 @@ def match_two_cohorts(df, seed, n_bins=5):
 # 실행 래퍼 — 등록된 mode 로 B.run_one 호출
 # ═══════════════════════════════════════════════════════════════
 def run_arm(mode, splitter, seed, epochs, root=None, model="dorga", arm=None, skip_existing=True):
-    """splitter 등록 후 core.train_arm 실행 (core 가 사전정렬 이미지를 디스크에서 로드).
-    arm 주면 run_dir 이름을 그걸로(미지정 시 {mode}_s{seed}). results dict(+ npz) 반환.
-    skip_existing=True: replay best-val weights using the original model, split, evaluator and writer."""
-    register(mode, splitter)
-    root = Path(root)
-    run_dir = root / (arm if arm else f"{mode}_s{seed}")     # checkpoint 하 arm 디렉터리
-    npz = run_dir / "test_preds.npz"                         # npz 는 checkpoint
-    rj = B._result_dir(run_dir) / "results.json"             # json 은 Result
-    if skip_existing:
-        npz = B.predict_saved_arm(model, mode, seed, run_dir)
-        res = json.loads(rj.read_text(encoding="utf-8"))
-        res["npz"] = str(npz)
-        return res
-    B.train_arm(model, mode, seed, epochs, root, arm=arm)
-    res = json.loads(rj.read_text(encoding="utf-8")); res["npz"] = str(npz)
-    return res
+    """Read saved predictions only. Training and inference are not allowed here."""
+    if not skip_existing:
+        raise ValueError("CSV aggregation reads existing test_preds.npz only")
+    path = Path(root) / (arm or f"{mode}_s{seed}") / "test_preds.npz"
+    data = load_predictions(path)
+    return dict(arm_metrics(data, mode, seed), npz=str(path))
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -363,3 +332,212 @@ def build_2026_cache(raw_paths):
 def build_full_2026_cache():
     df = legacy_manifest()
     return build_2026_cache(sorted({legacy_raw_path(row) for _,row in df[df.year==2026].iterrows()}))
+
+# CSV rows retain the exact baseline document and nested metric identity.
+CSV_COLUMNS = ['source', 'level', 'arm', 'direction', 'year', 'fold', 'seed',
+               'condition', 'roi', 'metric', 'json_path', 'value']
+STAGES = {'a4_cross': 'E1', 'a5_indomain_matched': 'E2',
+          'a6_positive_control': 'E3', 'a7_negative_control': 'E4',
+          'a8_indomain_raw': 'AppendixB'}
+
+
+def flatten(obj, path=()):
+    if isinstance(obj, dict) and obj:
+        for key, value in obj.items():
+            yield from flatten(value, path + (key,))
+    elif isinstance(obj, (list, tuple)) and obj:
+        for i, value in enumerate(obj):
+            yield from flatten(value, path + (i,))
+    else:
+        yield path, obj
+
+
+def write_documents(path, documents):
+    import csv
+    import re
+    rows = []
+    for source, obj in documents.items():
+        arm = Path(source).parent.name if source.endswith('/results.json') else ''
+        seed = re.search(r'_s(\d+)$', arm)
+        split = re.search(r'(?:fold|split)(\d+)', arm)
+        direction = ('fwd' if '24to26' in arm or '_fwd_' in arm else
+                     'rev' if '26to24' in arm or '_rev_' in arm else '')
+        condition = re.search(r'(beta|frac)([\d.]+)', arm)
+        for tokens, value in flatten(obj):
+            roi = next((t for t in tokens if t in ['overall'] + ROI), '')
+            year = next((str(t) for t in tokens if str(t) in ('2024', '2026')), '')
+            if not year:
+                year = str(obj.get('test_year', obj.get('year', ''))) if isinstance(obj, dict) else ''
+            summary_condition = ''
+            if not arm and len(tokens) > 1 and tokens[0] == 'curve':
+                item = obj['curve'][tokens[1]]
+                summary_condition = (f"beta{item['beta']}" if 'beta' in item else
+                                     f"frac{item['train_frac']}" if 'train_frac' in item else '')
+            rows.append(dict(source=source, level='arm' if arm else 'summary', arm=arm,
+                             direction=direction, year=year, fold=split.group(1) if split else '',
+                             seed=seed.group(1) if seed else (obj.get('seed', '') if arm else ''),
+                             condition=condition.group(0) if condition else summary_condition, roi=roi,
+                             metric='/'.join(map(str, tokens)),
+                             json_path=json.dumps(tokens, ensure_ascii=False),
+                             value=json.dumps(value, ensure_ascii=False)))
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_suffix('.csv.tmp')
+    with temp.open('w', encoding='utf-8-sig', newline='') as stream:
+        writer = csv.DictWriter(stream, fieldnames=CSV_COLUMNS)
+        writer.writeheader(); writer.writerows(rows)
+    temp.replace(path)
+    print(f'[save] {path} ({len(documents)} documents, {len(rows)} metrics)')
+
+
+def read_documents(path):
+    import csv
+    documents, seen = {}, set()
+    with Path(path).open(encoding='utf-8-sig', newline='') as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames != CSV_COLUMNS:
+            raise ValueError(f'Unexpected aggregation CSV columns: {path}')
+        for row in reader:
+            source = row['source']; tokens = json.loads(row['json_path'])
+            key = (source, tuple(tokens))
+            if key in seen: raise ValueError(f'Duplicate CSV metric: {key}')
+            seen.add(key)
+            value = json.loads(row['value'])
+            if not tokens:
+                documents[source] = value
+                continue
+            node = documents.setdefault(source, [] if isinstance(tokens[0], int) else {})
+            for i, token in enumerate(tokens):
+                last = i == len(tokens)-1
+                child = value if last else ([] if isinstance(tokens[i+1], int) else {})
+                if isinstance(node, list):
+                    while len(node) <= token: node.append(None)
+                    if last or node[token] is None: node[token] = child
+                    node = node[token]
+                else:
+                    if last: node[token] = child
+                    else: node = node.setdefault(token, child)
+    return documents
+
+
+def load_predictions(path):
+    path = Path(path)
+    if not path.is_file(): raise FileNotFoundError(f'Missing saved predictions: {path}')
+    with np.load(path, allow_pickle=True) as data:
+        P, Y, patients = data['preds'], data['labels'], np.asarray(data['patients']).astype(str)
+    if P.ndim != 2 or P.shape != Y.shape or P.shape[1] != len(ROI) or len(P) != len(patients) or not len(P):
+        raise ValueError(f'Invalid prediction shapes: {path}')
+    if not np.isfinite(P).all() or not np.isfinite(Y).all():
+        raise ValueError(f'Nonfinite predictions: {path}')
+    return P, Y, patients
+
+
+def arm_metrics(data, mode, seed):
+    P, Y, patients = data
+    errors = (P-Y).mean(axis=1)
+    vec = np.array([errors[patients == u].mean() for u in np.unique(patients)])
+    mean, ci = mean_ci(vec, seed=seed)
+    return dict(model='dorga', mode=mode, seed=seed, roi_order=ROI, n_test=len(P),
+                acc=float((P == Y).mean()), mae=float(np.abs(P-Y).mean()), bias=float((P-Y).mean()),
+                pat_bias=mean, ci_lo=float(ci[0]), ci_hi=float(ci[1]),
+                per_roi={r: dict(acc=float((P[:,i] == Y[:,i]).mean()),
+                                 mae=float(np.abs(P[:,i]-Y[:,i]).mean()),
+                                 bias=float((P[:,i]-Y[:,i]).mean())) for i,r in enumerate(ROI)})
+
+
+def expected_arms(stage):
+    if stage == 'a4_cross':
+        return [(f'dorga/{mode}_split{k}', f'{mode}_split{k}', k)
+                for mode in ('24to26', '26to24') for k in range(1,6)]
+    if stage in ('a5_indomain_matched', 'a8_indomain_raw'):
+        tag = 'matched' if stage == 'a5_indomain_matched' else 'raw'
+        return [(f'dorga/{tag}_{year}_fold{k}_s{seed}', f'{tag}_{year}_fold{k}', seed)
+                for year in (2024,2026) for k in range(5) for seed in (42,1,2)]
+    positive = stage == 'a6_positive_control'
+    prefix, knob, values = ('E3','beta',(0.0,0.25,0.5,1.0)) if positive else ('E4','frac',(1.0,0.5,0.25))
+    return [(f'{prefix}_2024_{knob}{v}_{direction}_s{seed}', f'{prefix}_2024_{knob}{v}_{direction}', seed)
+            for v in values for seed in (42,1,2) for direction in ('fwd','rev')]
+
+
+def require_predictions(stages):
+    missing = [str(A1_OUT/STAGES[stage]/arm/'test_preds.npz')
+               for stage in stages for arm,_,_ in expected_arms(stage)
+               if not (A1_OUT/STAGES[stage]/arm/'test_preds.npz').is_file()]
+    if missing: raise FileNotFoundError('Missing saved predictions (no training/inference fallback):\n'+'\n'.join(missing))
+
+
+def cohort_from_predictions(arrays, year):
+    keys = ['overall'] + ROI
+    biases = {key: {} for key in keys}
+    ps, ys = [], []
+    for P,Y,patients in arrays:
+        ps.append(P); ys.append(Y)
+        for key in keys:
+            e = (P-Y).mean(axis=1) if key == 'overall' else (P[:,ROI.index(key)]-Y[:,ROI.index(key)]).astype(float)
+            for patient in np.unique(patients):
+                biases[key].setdefault(patient, []).append(float(e[patients == patient].mean()))
+    P,Y=np.vstack(ps),np.vstack(ys)
+    out=dict(year=year,n_pat=len(biases['overall']),acc=float((P==Y).mean()),mae=float(np.abs(P-Y).mean()))
+    for key in keys:
+        vec=np.array([np.mean(biases[key][p]) for p in sorted(biases[key])])
+        g,ci=mean_ci(vec,seed=0)
+        out[key]=dict(g=g,ci=list(ci),vec=vec.tolist())
+    return out
+
+
+def aggregate_stage(stage):
+    require_predictions([stage])
+    folder=STAGES[stage]; documents={}; arrays={}
+    for arm,mode,seed in expected_arms(stage):
+        data=load_predictions(A1_OUT/folder/arm/'test_preds.npz')
+        arrays[arm]=data
+        metrics=arm_metrics(data,mode,seed)
+        if stage == 'a4_cross':
+            ty,ey=(2024,2026) if mode.startswith('24to26') else (2026,2024)
+        else:
+            ty=ey=2026 if '2026' in mode else 2024
+        metrics.update(train_year=ty,test_year=ey)
+        documents[f'{folder}/{arm}/results.json']=metrics
+    if stage in ('a5_indomain_matched','a8_indomain_raw'):
+        matched=stage=='a5_indomain_matched';tag='matched' if matched else 'raw';prefix='e2' if matched else 'appb'
+        cohorts={str(year):cohort_from_predictions([arrays[a] for a,_,_ in expected_arms(stage) if f'{year}_fold' in a],year)
+                 for year in (2024,2026)}
+        for year,cohort in cohorts.items(): documents[f'{folder}/{prefix}_cohort_{year}.json']=cohort
+        group=dict(cohorts)
+        if matched: group['n']={y:c['n_pat'] for y,c in cohorts.items()}
+        documents[f'{folder}/{prefix}_summary.json']={tag:group,
+            'A1_test_matched' if matched else 'A1_test':a1_test(cohorts['2024'],cohorts['2026'],['overall']+ROI)}
+    elif stage in ('a6_positive_control','a7_negative_control'):
+        positive=stage=='a6_positive_control';knob='beta' if positive else 'frac'
+        values=(0.0,0.25,0.5,1.0) if positive else (1.0,0.5,0.25)
+        curve=[]
+        for value in values:
+            ds={k:[] for k in ['overall']+ROI};ss={k:[] for k in ds}
+            for seed in (42,1,2):
+                for key in ds:
+                    f=A1_OUT/folder/f'{folder}_2024_{knob}{value}_fwd_s{seed}'/'test_preds.npz'
+                    r=A1_OUT/folder/f'{folder}_2024_{knob}{value}_rev_s{seed}'/'test_preds.npz'
+                    dec=decompose(f,r,roi=None if key=='overall' else key,seed=seed)
+                    ds[key].append(dec['delta']);ss[key].append(dec['s'])
+            if positive:
+                item=dict(beta=value,delta_mean=float(np.mean(ds['overall'])),delta_sd=float(np.std(ds['overall'])),
+                          s_mean=float(np.mean(ss['overall'])),s_sd=float(np.std(ss['overall'])),deltas=ds['overall'],ss=ss['overall'],
+                          delta_roi={k:float(np.mean(ds[k])) for k in ROI},s_roi={k:float(np.mean(ss[k])) for k in ROI})
+            else:
+                item=dict(train_frac=value,delta_spurious=float(np.mean(ds['overall'])),delta_sd=float(np.std(ds['overall'])),
+                          s_mean=float(np.mean(ss['overall'])),deltas=ds['overall'])
+            curve.append(item)
+        # Test patients in reverse are H1, in forward are H2; derive sizes from saved predictions.
+        first=values[0]
+        h1=len(np.unique(arrays[f'{folder}_2024_{knob}{first}_rev_s42'][2]))
+        h2=len(np.unique(arrays[f'{folder}_2024_{knob}{first}_fwd_s42'][2]))
+        summary=dict(year=2024,n_H1=h1,n_H2=h2,curve=curve)
+        if positive:
+            slope,intercept=np.polyfit(values,[c['delta_mean'] for c in curve],1)
+            summary.update(recovery_slope=float(slope),recovery_intercept=float(intercept),s_grand=float(np.mean([c['s_mean'] for c in curve])),
+                           verdict='기울기≈1·절편≈0 이면 추정기 무편향 (A1-참 조건 검증됨)')
+        else:
+            summary['note']='참 δ=0. frac↓ 일수록 δ_spurious 가 0 에서 벗어나면 A1 위반이 δ 로 누출됨을 뜻함.'
+        documents[f'{folder}/{"e3" if positive else "e4"}_summary.json']=summary
+    write_documents(RESULT_OUT/'A_analysis'/f'{stage}.csv',documents)
+    return documents

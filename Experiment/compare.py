@@ -1,4 +1,4 @@
-"""Compare Phase1 Result_old with regenerated Result; --run replays saved weights before comparison.
+"""Compare aggregated Phase1 CSV with Result_old JSON/CSV; --run reads saved predictions only.
 Run: python Experiment/compare.py [--old DIR] [--new DIR] [--atol 1e-6] [--rtol 1e-5]
 Exit 0: equal metrics; 1: mismatch/missing; 2: invalid inputs.
 """
@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 PHASE1 = {'E0', 'E1', 'E2', 'E3', 'E4', 'AppendixB', 'L'}
 METADATA = {'mrm', 'npz', 'image_path', 'timestamp', 'elapsed', 'elapsed_seconds', 'tail_bias'}
 KEY_COLUMNS = ('cohort', 'uid', 'patient_id', 'patient', 'pid', 'year', 'model', 'roi', 'ROI',
@@ -109,77 +110,111 @@ def collect(base):
         files[key] = path
     return files
 
+# Fields requiring training history or model-selection logs, not prediction NPZ.
+ARM_UNAVAILABLE = {'n_train', 'final_epoch', 'best_val_epoch', 'best_val_mae', 'tail_bias', 'mrm'}
+AGGREGATES = {
+    'A_analysis/a4_cross.csv': 'E1',
+    'A_analysis/a5_indomain_matched.csv': 'E2',
+    'A_analysis/a6_positive_control.csv': 'E3',
+    'A_analysis/a7_negative_control.csv': 'E4',
+    'A_analysis/a8_indomain_raw.csv': 'AppendixB',
+    'B_summary/b1_summary.csv': 'summary',
+}
+
+
+def new_documents(base):
+    from Experiment.A_analysis.common import read_documents
+    documents = {}
+    for rel in AGGREGATES:
+        path = base / rel
+        if not path.exists(): continue
+        for source, value in read_documents(path).items():
+            if source in documents: raise ValueError(f'Duplicate source in aggregation CSVs: {source}')
+            documents[source] = value
+    for source, rel in SPECIAL.items():
+        path = base / rel
+        if path.is_file() and path.suffix.lower() == '.csv':
+            if source in documents: raise ValueError(f'Duplicate source: {source}')
+            _, documents[source] = read_csv(path)
+    # New CSV/JSON files at stage roots must not silently disappear.
+    known = set(AGGREGATES) | set(SPECIAL.values())
+    for folder in ('A_analysis', 'B_summary'):
+        for path in (base/folder).glob('*'):
+            if path.is_file() and path.suffix.lower() in {'.csv', '.json'}:
+                if path.relative_to(base).as_posix() not in known:
+                    raise ValueError(f'Unmapped result file: {path}')
+    return documents
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--old', type=Path, default=ROOT/'Result_old')
     ap.add_argument('--new', type=Path, default=ROOT/'Result')
     ap.add_argument('--atol', type=float, default=1e-6)
     ap.add_argument('--rtol', type=float, default=1e-5)
-    ap.add_argument('--run', action='store_true', help='Run Phase1 from saved best-val weights, then compare')
+    ap.add_argument('--run', action='store_true', help='Aggregate existing checkpoint NPZ from a4 onward; no training/inference')
     args = ap.parse_args()
+    if args.atol < 0 or args.rtol < 0: ap.error('tolerances must be nonnegative')
     if args.run:
         if args.old.resolve() != (ROOT/'Result_old').resolve() or args.new.resolve() != (ROOT/'Result').resolve():
             ap.error('--run uses repository Result_old and Result')
-        tasks = [
-            'A_analysis/a1_structure.py', 'A_analysis/a2_label_image.py', 'A_analysis/a3_reproducibility.py',
-            'A_analysis/a4_cross.py', 'A_analysis/a5_indomain_matched.py', 'A_analysis/a6_positive_control.py',
-            'A_analysis/a7_negative_control.py', 'A_analysis/a8_indomain_raw.py',
-            'B_summary/b1_summary.py', 'C_figures/c1_confusion.py',
-        ]
+        from Experiment.A_analysis import common as A
+        try:
+            A.require_predictions(list(A.STAGES))
+        except FileNotFoundError as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+        tasks = [*(f'A_analysis/{stage}.py' for stage in A.STAGES),
+                 'B_summary/b1_summary.py', 'C_figures/c1_confusion.py']
         for task in tasks:
             print(f'RUN: {task}', flush=True)
             completed = subprocess.run([sys.executable, str(ROOT/'Experiment'/task)], cwd=ROOT)
             if completed.returncode:
                 print(f'STOP: {task} exited {completed.returncode}', file=sys.stderr)
                 return completed.returncode
-
-    if args.atol < 0 or args.rtol < 0: ap.error('tolerances must be nonnegative')
     if not args.old.is_dir() or not args.new.is_dir(): ap.error('both directories must exist')
     try:
-        old, new = collect(args.old), collect(args.new)
-    except ValueError as exc:
+        old = {key:path for key,path in collect(args.old).items()
+               if path.suffix.lower() in {'.csv', '.json'} and path.name != 'history.json'}
+        new = new_documents(args.new)
+    except (ValueError, OSError, csv.Error) as exc:
         ap.error(str(exc))
-    if not new:
-        print('No new Phase1 outputs. Run: python Experiment/compare.py --run', file=sys.stderr)
-        return 2
     if not old: ap.error('no Phase1 baseline files')
-    failures = 0
-    for rel in sorted(old.keys() | new.keys()):
-        if Path(rel).name == 'history.json':
-            print(f'TRAINING_LOG_NOT_REPLAYED: {rel}')
-            continue
-        if Path(rel).suffix == '.npz':
-            print(f'FRESH_PREDICTIONS: {rel}')
-            continue
-        if rel not in old or rel not in new:
-            # Image presence is informative, not a numeric reproduction verdict.
-            missing = 'missing_new' if rel not in new else 'new_only'
-            print(f'{missing}: {rel}')
-            if Path(rel).suffix.lower() in {'.csv', '.json'}: failures += 1
-            continue
-        if Path(rel).suffix.lower() not in {'.csv', '.json'}:
-            print(f'NON_METRIC: {rel} bytes_equal={old[rel].read_bytes()==new[rel].read_bytes()}')
+    if not new:
+        print('No new CSV outputs. Run: python Experiment/compare.py --run', file=sys.stderr)
+        return 2
+    print('EXCLUDED: history.json; per-run fields '+', '.join(sorted(ARM_UNAVAILABLE)))
+    print('INPUT: aggregated CSV only; previous per-run Result JSON/NPZ are not read')
+    counts = dict(passed=0, different=0, missing_new=0, new_only=0)
+    for source in sorted(old.keys() | new.keys()):
+        if source not in old or source not in new:
+            status = 'missing_new' if source not in new else 'new_only'
+            counts[status] += 1
+            print(f'{status}: {source}')
             continue
         issues, metadata = [], []
         try:
-            if rel.endswith('.csv'):
-                fa, a = read_csv(old[rel]); fb, b = read_csv(new[rel])
-                if set(fa) != set(fb): issues.append((rel, fa, fb, 'columns'))
-                a, b, keys = align_csv(a,b)
-                print(f'CSV_KEY: {rel} {keys}')
+            b = new[source]
+            if source.endswith('.csv'):
+                fields, a = read_csv(old[source])
+                if not isinstance(b, list): raise ValueError('Expected CSV rows')
+                if b and set(fields) != set(b[0]): issues.append((source, fields, list(b[0]), 'columns'))
+                a,b,keys = align_csv(a,b)
             else:
-                a = json.loads(old[rel].read_text(encoding='utf-8-sig'))
-                b = json.loads(new[rel].read_text(encoding='utf-8-sig'))
-            compare_values(a,b,rel,issues,metadata,args.atol,args.rtol)
-        except (ValueError, OSError, csv.Error) as exc:
-            issues.append((rel,'','',str(exc)))
-        print(f'{"DIFF" if issues else "PASS"}: {rel}')
-        for at, a, b, why in issues:
-            print(f'  {at}: old={a!r} new={b!r} {why}')
-        for at in metadata: print(f'  METADATA: {at}')
-        failures += bool(issues)
-    print(f'files_with_differences_or_missing={failures}; atol={args.atol}; rtol={args.rtol}')
-    return int(failures > 0)
+                a = json.loads(old[source].read_text(encoding='utf-8-sig'))
+                if source.endswith('/results.json'):
+                    a = {k:v for k,v in a.items() if k not in ARM_UNAVAILABLE}
+                    b = {k:v for k,v in b.items() if k not in ARM_UNAVAILABLE}
+            compare_values(a,b,source,issues,metadata,args.atol,args.rtol)
+        except (ValueError, TypeError, OSError, csv.Error) as exc:
+            issues.append((source, '', '', str(exc)))
+        counts['different' if issues else 'passed'] += 1
+        print(f'{"DIFF" if issues else "PASS"}: {source}')
+        for at,a,b,why in issues[:20]: print(f'  {at}: old={a!r} new={b!r} {why}')
+        if len(issues)>20: print(f'  ... {len(issues)} differing items total')
+    print(' '.join(f'{k}={v}' for k,v in counts.items())+f'; atol={args.atol}; rtol={args.rtol}')
+    return int(any(counts[k] for k in ('different','missing_new','new_only')))
+
 
 if __name__ == '__main__':
     raise SystemExit(main())

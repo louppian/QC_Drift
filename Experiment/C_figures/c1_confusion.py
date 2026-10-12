@@ -11,7 +11,7 @@ ROI 헤더는 **정합 보정 후** 값 δ_corr = δ_obs + Δγ_matched/2 와 �
 빨간 테두리로 강조한다 — 보정 후에도 방향 반전이 남는 문제 영역.
 
 입력:  checkpoint/E1/dorga/{24to26,26to24}_split*/test_preds.npz  (preds·labels)
-       Result/B_summary/b1_summary/A1_verdict.json  (delta_corrected: δ_corr·CI)
+       Result/B_summary/b1_summary.csv  (delta_corrected: δ_corr·CI)
 산출:  Result/C_figures/c1_confusion/e1_confusion_quadrant.png
 
 실행:  python Experiment/C_figures/c1_confusion.py
@@ -32,8 +32,8 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 
 _HERE = Path(__file__).resolve().parent
 _REPO = next(p for p in (_HERE, *_HERE.parents) if (p / "Experiment").is_dir())
-CKPT_E1   = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
-VERDICT   = _REPO / "Result" / "B_summary" / "b1_summary" / "A1_verdict.json"     # 입력: δ_corr + CI (보정 후)
+CKPT_E1   = _REPO / "checkpoint" / "E1" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
+VERDICT   = _REPO / "Result" / "B_summary" / "b1_summary.csv"     # 입력: δ_corr + CI (보정 후)
 RESULT_E1 = _REPO / "Result" / "C_figures" / "c1_confusion"
 ROI = ["RT", "LT", "RB", "LB"]                    # core.ROI = preds 열 순서
 NGRADE = 5
@@ -61,8 +61,10 @@ def load_pool(mode):
 
 
 def load_delta():
-    """A1_verdict.json → {roi: (δ_corr, lo, hi, CI가 0을 배제하는가)}."""
-    d = json.loads(VERDICT.read_text(encoding="utf-8"))["delta_corrected"]
+    """b1_summary.csv → {roi: (δ_corr, lo, hi, CI가 0을 배제하는가)}."""
+    sys.path.insert(0, str(_REPO))
+    from Experiment.A_analysis.common import read_documents
+    d = read_documents(VERDICT)["A1_verdict.json"]["delta_corrected"]
     out = {}
     for roi in ROI:
         r = d[roi]

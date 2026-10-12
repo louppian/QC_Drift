@@ -1,25 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""
-E 결과 집계 — E1~E5 단일 진입점 (舊 A/run_all.py 의 판정 로직 이관).
-
-- E1 cross : results.json 10개(fwd/rev × split1~5) → 방향별 test bias 평균±sd,
-             ROI별 δ_obs=(rev−fwd)/2 · γ=(rev+fwd)/2 · 방향반전(flip) 판정.
-- E2 (matched) : e2_summary.json → Δg CSV (matched). 부록B(raw)는 appb_summary.json.
-- 최종 판정 : δ_corr = δ_obs + Δγ_matched/2 (환자 부트스트랩 95% CI) → Result/B_summary/b1_summary/A1_verdict.json.
-- E3/E4    : 복원 기울기(양성대조)·누출(음성대조) 요약 출력.
-
-check_value_{l,e,a}.py 는 이 산출물을 draft md 값과 '비교만' 한다(계산 안 함).
-
-산출:
-  Result/B_summary/b1_summary/e1_summary.csv   fwd/rev/δ/γ/flip
-  Result/B_summary/b1_summary/e2_summary.csv           Δg_matched (Experiment 2)
-  Result/B_summary/b1_summary/appb_summary.csv  Δg_raw (부록 B)
-  Result/B_summary/b1_summary/A1_verdict.json     δ_obs·γ·Δγ·δ_corr+CI (최종 판정)
-
-실행:
-  python Experiment/B_summary/b1_summary.py
-  python Experiment/B_summary/b1_summary.py --runs /path/to/Result/A_analysis/a4_cross/dorga
-"""
+"""Aggregate a4~a8 CSV metrics and checkpoint E1 predictions into B_summary/b1_summary.csv."""
 import argparse
 import csv
 import json
@@ -34,14 +14,16 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 
 _HERE = Path(__file__).resolve().parent          # Experiment/E
 _REPO = _HERE.parents[1]                          # Private repo 루트
-RUNS_DIR   = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"       # 입력: {24to26,26to24}_split{k}/results.json
-CKPT_E1    = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"   # 입력: npz (환자 부트스트랩 CI 용)
-RESULT_E1  = _REPO / "Result" / "B_summary" / "b1_summary"
-RESULT_MATCHED = _REPO / "Result" / "A_analysis" / "a5_indomain_matched"           # Experiment 2 (matched in-domain, Δγ)
-RESULT_POS     = _REPO / "Result" / "A_analysis" / "a6_positive_control"           # Experiment 3 (양성대조, 복원곡선)
-RESULT_NEG     = _REPO / "Result" / "A_analysis" / "a7_negative_control"           # Experiment 4 (음성대조, 누출)
-RESULT_APPB    = _REPO / "Result" / "A_analysis" / "a8_indomain_raw"    # 부록 B (raw in-domain, Δg_raw)
-RESULT_ROOT = _REPO / "Result" / "B_summary" / "b1_summary"
+sys.path.insert(0, str(_REPO))
+from Experiment.A_analysis import common as A
+RUNS_DIR = _REPO / "Result/A_analysis/a4_cross.csv"
+CKPT_E1 = _REPO / "checkpoint/E1/dorga"
+RESULT_MATCHED = _REPO / "Result/A_analysis/a5_indomain_matched.csv"
+RESULT_POS = _REPO / "Result/A_analysis/a6_positive_control.csv"
+RESULT_NEG = _REPO / "Result/A_analysis/a7_negative_control.csv"
+RESULT_APPB = _REPO / "Result/A_analysis/a8_indomain_raw.csv"
+RESULT_ROOT = _REPO / "Result/B_summary"
+OUTPUT_DOCUMENTS = {}
 ROI = ["RT", "LT", "RB", "LB"]
 NBOOT = 5000
 
@@ -51,13 +33,8 @@ def _dir(mode):
 
 
 def load_all(runs_dir: Path):
-    recs = []
-    for p in sorted(runs_dir.glob("*/results.json")):     # {tag}_split{k}/results.json
-        try:
-            recs.append(json.loads(p.read_text(encoding="utf-8")))
-        except Exception as e:
-            print(f"[skip] {p}: {e}")
-    return recs
+    return [obj for source,obj in sorted(A.read_documents(runs_dir).items())
+            if source.startswith('E1/') and source.endswith('/results.json')]
 
 
 def ms(vals):
@@ -72,38 +49,25 @@ def fmt(m, s):
 
 
 # ═══════════════ E2/E3 in-domain Δg CSV export ═══════════════
-def _export_indomain(summary_json, a1_key, dg_col, reject_col, out_dir, out_name):
-    if not summary_json.exists():
-        return
-    d = json.loads(summary_json.read_text(encoding="utf-8"))
-    a1 = d.get(a1_key, {})
-    if not a1:
-        return
+def _export_indomain(path, source, a1_key, dg_col, reject_col, output_source):
+    d = A.read_documents(path)[source]
     rows = []
-    for roi in ["overall"] + ROI:
-        t = a1.get(roi, {})
-        ci = t.get("ci", [None, None]) or [None, None]
-        rows.append({"roi": roi,
-                     dg_col: round(t["delta_g"], 4) if "delta_g" in t else "",
-                     "ci_lo": round(ci[0], 4) if ci[0] is not None else "",
-                     "ci_hi": round(ci[1], 4) if ci[1] is not None else "",
-                     reject_col: int(t["reject_A1"]) if "reject_A1" in t else ""})
-    out_dir.mkdir(parents=True, exist_ok=True)
-    p = out_dir / out_name
-    with open(p, "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.DictWriter(f, fieldnames=["roi", dg_col, "ci_lo", "ci_hi", reject_col])
-        w.writeheader(); w.writerows(rows)
-    print(f"[save] {p}")
+    for roi in ['overall'] + ROI:
+        t = d[a1_key][roi]
+        rows.append(dict(roi=roi, **{dg_col:round(t['delta_g'],4),
+                    'ci_lo':round(t['ci'][0],4), 'ci_hi':round(t['ci'][1],4),
+                    reject_col:int(t['reject_A1'])}))
+    OUTPUT_DOCUMENTS[output_source] = rows
 
 
-def export_matched():   # Experiment 2 (matched) → Result/B_summary/b1_summary/e2_summary.csv (Δg_matched)
-    _export_indomain(RESULT_MATCHED / "e2_summary.json", "A1_test_matched",
-                     "delta_g_matched", "reject_A1_matched", RESULT_ROOT, "e2_summary.csv")
+def export_matched():
+    _export_indomain(RESULT_MATCHED, 'E2/e2_summary.json', 'A1_test_matched',
+                     'delta_g_matched', 'reject_A1_matched', 'E2/e2_summary.csv')
 
 
-def export_appb():      # 부록 B (raw) → Result/B_summary/b1_summary/appb_summary.csv (Δg_raw)
-    _export_indomain(RESULT_APPB / "appb_summary.json", "A1_test",
-                     "delta_g_raw", "reject_A1_raw", RESULT_ROOT, "appb_summary.csv")
+def export_appb():
+    _export_indomain(RESULT_APPB, 'AppendixB/appb_summary.json', 'A1_test',
+                     'delta_g_raw', 'reject_A1_raw', 'AppendixB/appb_summary.csv')
 
 
 # ═══════════════ 환자 bias 부트스트랩 (E1 npz, split 전부 pool) ═══════════════
@@ -153,16 +117,11 @@ CONTRASTS = {
 
 # ═══════════════ 최종 판정 δ_corr = δ_obs + Δγ_matched/2 ═══════════════
 def build_verdict(dobs_map=None):
-    """δ_obs 점추정은 E1 split 평균(dobs_map, results.json 유래 = git 재현) **단일 소스**를 쓴다.
-    E1 표와 δ_corr 이 같은 δ_obs 를 공유하므로 두 값이 갈리지 않는다.
-    Δγ 점추정·CI 는 e3_summary.json(git). δ_obs·δ_corr 의 CI 는 npz 환자 부트스트랩 폭을
-    점추정에 중심맞춰 산출(npz 없으면 CI 생략, 점추정만). → Result/B_summary/b1_summary/A1_verdict.json."""
-    def _ld(p):
-        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
-    matched = _ld(RESULT_MATCHED / "e2_summary.json")   # Δγ (Experiment 2, matched)
-    raw     = _ld(RESULT_APPB / "appb_summary.json")     # Δγ_raw (부록 B, 정합 전)
-    pos     = _ld(RESULT_POS / "e3_summary.json")        # 복원곡선 (Experiment 3, 양성대조)
-    neg     = _ld(RESULT_NEG / "e4_summary.json")        # 누출 (Experiment 4, 음성대조)
+    """Original split-mean point estimates and joint patient bootstrap, from CSV/NPZ."""
+    matched = A.read_documents(RESULT_MATCHED)['E2/e2_summary.json']
+    raw = A.read_documents(RESULT_APPB)['AppendixB/appb_summary.json']
+    pos = A.read_documents(RESULT_POS)['E3/e3_summary.json']
+    neg = A.read_documents(RESULT_NEG)['E4/e4_summary.json']
 
     def _reci(boot, point):                          # 부트스트랩 폭을 점추정 중심에 맞춤
         lo, hi = np.percentile(boot, [2.5, 97.5]); m = float(boot.mean())
@@ -252,9 +211,7 @@ def build_verdict(dobs_map=None):
          "roi_correlation": corr_mat,
          "E3_recovery_slope": (pos.get("recovery_slope") if pos else None),
          "E4_leakage": ([(c["train_frac"], c["delta_spurious"]) for c in neg["curve"]] if neg else None)}
-    RESULT_ROOT.mkdir(parents=True, exist_ok=True)
-    (RESULT_ROOT / "A1_verdict.json").write_text(
-        json.dumps(V, indent=1, ensure_ascii=False), encoding="utf-8")
+    OUTPUT_DOCUMENTS['A1_verdict.json'] = V
 
     print("\n" + "=" * 78)
     print("  최종 판정  δ_corr = δ_obs + Δγ_matched/2   (환자 부트스트랩 95% CI)")
@@ -300,7 +257,7 @@ def build_verdict(dobs_map=None):
         if neg and neg.get("curve"):
             leak = ", ".join(f"frac{c['train_frac']}={c['delta_spurious']:+.3f}" for c in neg["curve"])
             print(f"  [E4 음성대조] 누출: {leak}")
-    print(f"[save] {RESULT_ROOT / 'A1_verdict.json'}")
+
 
 
 def main():
@@ -308,16 +265,16 @@ def main():
     ap.add_argument("--runs", default=str(RUNS_DIR))
     args = ap.parse_args()
     runs_dir = Path(args.runs)
+    OUTPUT_DOCUMENTS.clear()
+    A.require_predictions(["a4_cross"])
 
     export_matched()                    # Experiment 2 matched Δg → Result/B_summary/b1_summary/e2_summary.csv
     export_appb()                       # 부록 B raw Δg           → Result/B_summary/b1_summary/appb_summary.csv
 
     recs = load_all(runs_dir)
-    if not recs:
-        print(f"[중단] cross results.json 없음: {runs_dir}")
-        build_verdict()                 # E3/E4/E5 CSV 는 위에서 저장됨; 판정은 npz 있으면 시도
-        return
-    print(f"[load] results.json {len(recs)}개  ({runs_dir})")
+    if len(recs) != 10:
+        raise ValueError(f"Expected 10 cross runs in CSV, got {len(recs)}: {runs_dir}")
+    print(f"[load] CSV 개별 실행 지표 {len(recs)}개 ({runs_dir})")
 
     G = {"fwd": [], "rev": []}
     for r in recs:
@@ -360,17 +317,11 @@ def main():
 
     print(f"  → dorga: 4개 영역 중 {n_flip}개에서 방향반전(fwd<0<rev)")
 
-    RESULT_E1.mkdir(parents=True, exist_ok=True)
-    csv_path = RESULT_E1 / "e1_summary.csv"
-    with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.DictWriter(f, fieldnames=["model", "roi", "fwd_bias_mean", "fwd_bias_sd",
-                                          "rev_bias_mean", "rev_bias_sd",
-                                          "delta_obs", "gamma", "flip_Hdata"])
-        w.writeheader(); w.writerows(csv_rows)
-    print(f"[save] {csv_path}")
+    OUTPUT_DOCUMENTS['E1/e1_summary.csv'] = csv_rows
 
     dobs_map = {row["roi"]: row for row in csv_rows}   # E1 표와 동일한 split 평균 δ_obs 단일 소스
-    build_verdict(dobs_map)             # δ_corr + CI → Result/B_summary/b1_summary/A1_verdict.json
+    build_verdict(dobs_map)
+    A.write_documents(RESULT_ROOT / "b1_summary.csv", OUTPUT_DOCUMENTS)
 
 
 if __name__ == "__main__":
