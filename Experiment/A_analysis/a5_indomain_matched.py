@@ -7,7 +7,7 @@ E2 — in-domain matched Δg 추정 (등급분포 정합)   [draft §5.2 = Exper
 설계: match_two_cohorts 로 정합 → 코호트별 환자 K-fold × init seed. 영역 [RT,LT,RB,LB].
 
 실행:  python e3_indomain_matched.py --folds 5 --init_seeds 42 1 2
-산출:  checkpoint/E2/dorga/ (가중치·npz) + Result/E2/dorga/ (per-run json) + Result/E2/e2_summary.json
+산출:  checkpoint/E2/dorga/ (가중치·npz) + Result/A_analysis/a5_indomain_matched/dorga/ (per-run json) + Result/A_analysis/a5_indomain_matched/e2_summary.json
        (A1_test_matched=Δg_matched)
 """
 import argparse, json, os as _os, sys as _sys
@@ -16,7 +16,7 @@ import pandas as pd
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
+from Experiment.A_analysis import common as A
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     args = ap.parse_args()
 
     root = A.A1_OUT / "E2" / "dorga"              # checkpoint/E2/dorga
-    out_dir = A.RESULT_OUT / "E2"
+    out_dir = A.RESULT_OUT / "A_analysis" / "a5_indomain_matched"
     keys = ["overall"] + list(A.ROI)
     df = A._prep(pd.read_csv(A.MANIFEST))         # match_two_cohorts 가 year·patient 사용
     keep = dict(zip((2024, 2026), A.match_two_cohorts(df, 0)))                    # 정합 seed 고정 0

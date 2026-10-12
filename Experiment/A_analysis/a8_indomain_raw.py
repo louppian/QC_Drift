@@ -8,7 +8,7 @@ r"""
       matched(등급분포 정합)는 E3 에서 별도 산출 → 수축분(Δg_raw−Δg_matched) 은 summary.py 판정.
 
 실행:  python e2_indomain_raw.py --folds 5 --init_seeds 42 1 2
-산출:  checkpoint/AppendixB/dorga/ (가중치·npz) + Result/AppendixB/dorga/ (per-run json) + Result/AppendixB/appb_summary.json
+산출:  checkpoint/AppendixB/dorga/ (가중치·npz) + Result/A_analysis/a8_indomain_raw/dorga/ (per-run json) + Result/A_analysis/a8_indomain_raw/appb_summary.json
        (A1_test=Δg_raw)
 """
 import argparse, json, os as _os, sys as _sys
@@ -16,7 +16,7 @@ import argparse, json, os as _os, sys as _sys
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
+from Experiment.A_analysis import common as A
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     args = ap.parse_args()
 
     root = A.A1_OUT / "AppendixB" / "dorga"              # checkpoint/AppendixB/dorga
-    out_dir = A.RESULT_OUT / "AppendixB"
+    out_dir = A.RESULT_OUT / "A_analysis" / "a8_indomain_raw"
     keys = ["overall"] + list(A.ROI)
 
     cohort = {}

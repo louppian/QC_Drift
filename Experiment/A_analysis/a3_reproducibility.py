@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-L4 — 판독자 재현성 (draft §4.5 표5) → Result/L/l4_reproducibility.csv
+L4 — 판독자 재현성 (draft §4.5 표5) → Result/A_analysis/a3_reproducibility/l4_reproducibility.csv
 
 표5는 두 가지 서로 다른 집합에서 나온다 (발표자료 S5 재현):
 
@@ -16,7 +16,7 @@ L4 — 판독자 재현성 (draft §4.5 표5) → Result/L/l4_reproducibility.cs
   컬럼 seq, inference_*, user_edit_*, posthoc_* (모두 해부학 순서 [RT,LT,RB,LB])
   서버: /shared/home/mai/JeongGeon/QC_Drift/CXR/2026 CXR
 
-실행: python Experiment/A/a3_reproducibility.py [--cxr_root <2026 CXR 폴더>]
+실행: python Experiment/A_analysis/a3_reproducibility.py [--cxr_root <2026 CXR 폴더>]
 """
 import argparse
 import csv
@@ -38,7 +38,7 @@ REPO = Path(__file__).resolve().parents[2]
 QUAD = ["RT", "LT", "RB", "LB"]
 EDT = [f"user_edit_{r}" for r in QUAD]
 INF = [f"inference_{r}" for r in QUAD]
-OUT = REPO / "Result" / "L" / "l4_reproducibility.csv"
+OUT = REPO / "Result" / "A_analysis" / "a3_reproducibility" / "l4_reproducibility.csv"
 CXR_DEFAULT = str(REPO / "CXR/2026 CXR")
 REMEASURE = "4_재측정"                         # 재측정(자기일치)
 ANALYSIS = ["1_독립", "2_완전동일"]              # 분석셋(모델-판독자, 46명·587장)

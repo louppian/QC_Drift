@@ -11,7 +11,7 @@ E3 — 반합성 양성 대조 (β 오프셋 주입, 복원곡선)   [draft §5.
       (clip(0,C-1) 때문에 큰 β 에서 기울기 감쇠 — 곡선이 그 지점을 드러낸다.)
 
 실행:  python e3_positive_control.py --year 2024 --betas 0 0.25 0.5 1.0 --reps 42 1 2 --epochs 50
-산출:  checkpoint/E3/ (가중치·npz) + Result/E3/ (per-run json) + Result/E3/e3_summary.json (복원곡선)
+산출:  checkpoint/E3/ (가중치·npz) + Result/A_analysis/a6_positive_control/ (per-run json) + Result/A_analysis/a6_positive_control/e3_summary.json (복원곡선)
 """
 import argparse, os as _os, sys as _sys
 import numpy as np
@@ -20,7 +20,7 @@ import pandas as pd
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
+from Experiment.A_analysis import common as A
 
 
 def two_halves(df, year, seed):
@@ -101,7 +101,7 @@ def main():
                s_grand=float(np.mean([c["s_mean"] for c in curve])),
                verdict="기울기≈1·절편≈0 이면 추정기 무편향 (A1-참 조건 검증됨)")
 
-    A.save_json(out, A.RESULT_OUT / "E3" / "e3_summary.json")
+    A.save_json(out, A.RESULT_OUT / "A_analysis" / "a6_positive_control" / "e3_summary.json")
     print("\n" + "=" * 78)
     print(f"{'β 주입':>8}{'δ overall':>11}" + "".join(f"{r:>8}" for r in A.ROI) + f"{'γ':>9}")
     for c in curve:
@@ -109,7 +109,7 @@ def main():
         print(f"{c['beta']:>8.2f}{c['delta_mean']:>+11.4f}"
               + "".join(f"{dr[r]:>+8.3f}" for r in A.ROI) + f"{c['s_mean']:>+9.3f}")
     print(f"\n복원곡선: δ ≈ {slope:.3f}·β + {intercept:+.3f}  (이상적 1·0)")
-    print("saved:", A.RESULT_OUT / "E3" / "e3_summary.json")
+    print("saved:", A.RESULT_OUT / "A_analysis" / "a6_positive_control" / "e3_summary.json")
 
 
 if __name__ == "__main__":

@@ -30,7 +30,7 @@ for _s in (sys.stdout, sys.stderr):
     try: _s.reconfigure(encoding="utf-8", errors="replace")
     except Exception: pass
 
-# ── 학습 코어: Private Experiment/A/core.py (舊 dorga_train_2026to2024.py 자립 대체) ──
+# ── 학습 코어: Private Experiment/A_analysis/core.py (舊 dorga_train_2026to2024.py 자립 대체) ──
 _HERE = os.path.dirname(os.path.abspath(__file__))     # Experiment/E
 _EXP_ROOT = os.path.dirname(_HERE)                     # Experiment
 _REPO = os.path.dirname(_EXP_ROOT)                     # Private repo 루트
@@ -40,7 +40,7 @@ if _EXP_ROOT not in sys.path:
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import core as B                                       # noqa: E402  학습 엔진(split/dataset/train/eval)
+from Experiment.A_analysis import core as B                                       # noqa: E402  학습 엔진(split/dataset/train/eval)
 
 # early stopping: val MAE 가 10 에폭 개선 없으면 중단 (전 arm 공통)
 EARLYSTOP = 10
@@ -288,3 +288,78 @@ def a1_test(out24, out26, keys):
         dg, dci = diff_ci(a, b, seed=0)
         a1[key] = dict(delta_g=dg, ci=list(dci), reject_A1=bool(sig(dci)))
     return a1
+
+
+# Restored from npj a1_common.py and original dorga_train_2026to2024.py.
+def legacy_manifest():
+    df = _prep(pd.read_csv(MANIFEST))
+    # Merged labels rewrites image_path; recover original raw paths by uid.
+    source = pd.read_csv(Path(_REPO) / "CXR/unified_labels.csv")
+    paths = source.set_index("uid", verify_integrity=True)["image_path"]
+    df["image_path"] = df["uid"].map(paths)
+    if df["image_path"].isna().any():
+        raise ValueError("Merged labels contain uid absent from unified_labels.csv")
+    return df
+
+
+def legacy_raw_path(row):
+    path = str(row["image_path"]).replace("\\", "/")
+    for prefix in ("/shared/home/mai/JeongGeon/Private/CXR/", "/shared/home/mai/JeongGeon/QC_Drift/CXR/"):
+        if path.startswith(prefix):
+            path = str(Path(_REPO) / "CXR" / path[len(prefix):])
+    local_prefix = "D:/InhaUH_CXR/2026.05 CXRs/Dataset/"
+    if path.startswith(local_prefix):
+        path = str(Path(_REPO) / "CXR/2026 CXR" / path[len(local_prefix):])
+    candidate = Path(path)
+    if int(row["year"]) == 2026 and candidate.parent.name.startswith("NPZ_IMAGE"):
+        candidate = Path(raw_path_from_npz(str(candidate)))
+    if candidate.is_file():
+        return str(candidate)
+    if int(row["year"]) == 2024:
+        for ext in (".png", ".jpg", ".jpeg"):
+            candidate = Path(_REPO) / "CXR/Merged/images_original" / (str(row["uid"]) + ext)
+            if candidate.is_file(): return str(candidate)
+    raise FileNotFoundError(f"Original image missing for {row.get('uid')}: {path}")
+
+
+def raw_path_from_npz(path):
+    import re
+    p = Path(path)
+    match = re.match(r"\d+_([A-Za-z]+\d+)\.png", p.name)
+    if match is None: raise ValueError(f"Unexpected NPZ image name: {path}")
+    return str(p.parent.parent / p.parent.name.replace("NPZ_IMAGE", "RAW_IMAGE") / (match.group(1).upper()+".jpg"))
+
+
+def build_2026_cache(raw_paths):
+    # Original algorithm: same theta and STN.transform for image AND mask.
+    import torch
+    import torch.nn.functional as F
+    from PIL import Image
+    from Model.SegSTN.seg import LungSegmenter
+    from Model.SegSTN.stn import STN
+    seg = LungSegmenter(str(Path(_REPO)/"Model/SegSTN/weights/finetuned_9601.pt"), device=str(B.DEVICE))
+    stn = STN(in_shape=(1,512,512)).to(B.DEVICE)
+    stn.load_state_dict(torch.load(Path(_REPO)/"Model/SegSTN/weights/stn_weights.pth", map_location=B.DEVICE, weights_only=False))
+    stn.eval()
+    cache = {}
+    with torch.no_grad():
+        for p in raw_paths:
+            arr = np.array(Image.open(p).convert("L")).astype(np.float32)/255.0
+            t = torch.from_numpy(arr)[None,None]
+            im1024 = F.interpolate(t,size=(1024,1024),mode="bilinear",align_corners=False)
+            im512 = F.interpolate(t,size=(512,512),mode="bilinear",align_corners=False).to(B.DEVICE)
+            mask1024 = seg(im1024.to(B.DEVICE))
+            mask512 = F.interpolate(mask1024.float(),size=(512,512),mode="nearest").to(B.DEVICE)
+            theta = stn(mask512)
+            image = STN.transform(im512,theta).cpu()
+            mask = STN.transform(mask512,theta).cpu()
+            cache[p] = ((image[0,0].numpy()*255).clip(0,255).astype(np.uint8),
+                        ((mask[0,0].numpy()>0.5)*255).astype(np.uint8))
+    del seg, stn
+    if torch.cuda.is_available(): torch.cuda.empty_cache()
+    return cache
+
+
+def build_full_2026_cache():
+    df = legacy_manifest()
+    return build_2026_cache(sorted({legacy_raw_path(row) for _,row in df[df.year==2026].iterrows()}))

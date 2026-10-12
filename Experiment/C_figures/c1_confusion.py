@@ -11,10 +11,10 @@ ROI 헤더는 **정합 보정 후** 값 δ_corr = δ_obs + Δγ_matched/2 와 �
 빨간 테두리로 강조한다 — 보정 후에도 방향 반전이 남는 문제 영역.
 
 입력:  checkpoint/E1/dorga/{24to26,26to24}_split*/test_preds.npz  (preds·labels)
-       Result/A1_verdict.json  (delta_corrected: δ_corr·CI)
-산출:  Result/E1/e1_confusion_quadrant.png
+       Result/B_summary/b1_summary/A1_verdict.json  (delta_corrected: δ_corr·CI)
+산출:  Result/C_figures/c1_confusion/e1_confusion_quadrant.png
 
-실행:  python Experiment/C/c1_confusion.py
+실행:  python Experiment/C_figures/c1_confusion.py
 """
 import json
 import sys
@@ -32,9 +32,9 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 
 _HERE = Path(__file__).resolve().parent
 _REPO = next(p for p in (_HERE, *_HERE.parents) if (p / "Experiment").is_dir())
-CKPT_E1   = _REPO / "Result" / "E1" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
-VERDICT   = _REPO / "Result" / "A1_verdict.json"     # 입력: δ_corr + CI (보정 후)
-RESULT_E1 = _REPO / "Result" / "E1"
+CKPT_E1   = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"    # 입력: {mode}_split{k}/test_preds.npz
+VERDICT   = _REPO / "Result" / "B_summary" / "b1_summary" / "A1_verdict.json"     # 입력: δ_corr + CI (보정 후)
+RESULT_E1 = _REPO / "Result" / "C_figures" / "c1_confusion"
 ROI = ["RT", "LT", "RB", "LB"]                    # core.ROI = preds 열 순서
 NGRADE = 5
 MODES = [("24to26", "2024→2026 (2026 라벨)"),      # e1_cross.DIRS 의 tag

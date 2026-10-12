@@ -35,7 +35,7 @@ for _s in (sys.stdout, sys.stderr):
 REPO = Path(__file__).resolve().parent
 EXP = REPO / "Experiment"
 # core / e_common / Model 해석용 경로 (각 모듈도 자체 shim 이 있으나 진입점에서 보강)
-for _p in (str(REPO), str(EXP / "A"), str(REPO / "Model"), str(REPO / "Model" / "DORGA")):
+for _p in (str(REPO), str(EXP / "A_analysis"), str(REPO / "Model"), str(REPO / "Model" / "DORGA")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -64,29 +64,29 @@ print("STEP 1 — 학습·집계 모듈 import (11)")
 print("=" * 72)
 CORE = {}
 def _imp_core():
-    CORE["core"] = _import("Experiment/A/core.py", "Experiment.A.core")
+    CORE["core"] = _import("Experiment/A_analysis/core.py", "Experiment.A_analysis.core")
 check("core.py", _imp_core)
 for rel, name in [
-    ("Experiment/A/common.py", "Experiment.A.common"),
-    ("Experiment/A/a4_cross.py", "e1_cross"),
-    ("Experiment/A/a5_indomain_matched.py", "e2_indomain_matched"),
-    ("Experiment/A/a6_positive_control.py", "e3_positive_control"),
-    ("Experiment/A/a7_negative_control.py", "e4_negative_control"),
-    ("Experiment/A/a8_indomain_raw.py", "appendixB_indomain_raw"),
-    ("Experiment/B/b1_summary.py", "e_summary"),
-    ("Experiment/B/b2_feature_summary.py", "l_summary"),
+    ("Experiment/A_analysis/common.py", "Experiment.A_analysis.common"),
+    ("Experiment/A_analysis/a4_cross.py", "e1_cross"),
+    ("Experiment/A_analysis/a5_indomain_matched.py", "e2_indomain_matched"),
+    ("Experiment/A_analysis/a6_positive_control.py", "e3_positive_control"),
+    ("Experiment/A_analysis/a7_negative_control.py", "e4_negative_control"),
+    ("Experiment/A_analysis/a8_indomain_raw.py", "appendixB_indomain_raw"),
+    ("Experiment/B_summary/b1_summary.py", "e_summary"),
+    ("Experiment/B_summary/b2_feature_summary.py", "l_summary"),
 ]:
     check(name, lambda rel=rel, name=name: _import(rel, name))
 
 # ─────────────────────────────────────────────────────────────
 print("\n" + "=" * 72)
-print("STEP 2 — 미구현/미포팅 L·A 코드 구문검사 (서버 데이터로 구현 예정)")
+print("STEP 2 — 분석 코드 구문검사")
 print("=" * 72)
-for rel in ["Experiment/A/a9_recompute_bestval.py",
-            "Experiment/A/a10_features.py",
-            "Experiment/A/a11_features_matched.py",
-            "Experiment/A/a1_structure.py",
-            "Experiment/A/a3_reproducibility.py"]:
+for rel in ["Experiment/A_analysis/a9_recompute_bestval.py",
+            "Experiment/A_analysis/a10_features.py",
+            "Experiment/A_analysis/a11_features_matched.py",
+            "Experiment/A_analysis/a1_structure.py",
+            "Experiment/A_analysis/a3_reproducibility.py"]:
     check(f"syntax {Path(rel).name}",
           lambda rel=rel: ast.parse((REPO / rel).read_text(encoding="utf-8")))
 
@@ -94,7 +94,7 @@ for rel in ["Experiment/A/a9_recompute_bestval.py",
 print("\n" + "=" * 72)
 print("STEP 3 — 데이터·가중치 경로 존재 확인")
 print("=" * 72)
-core = CORE.get("Experiment.A.core")
+core = CORE.get("core")
 if core is None:
     print("  [SKIP] core import 실패로 STEP 3·4 생략")
     SKIP += ["STEP3", "STEP4"]

@@ -23,10 +23,10 @@ dataset·train loop·loss·eval·bootstrap 을 제공하고, E1~E4 드라이버�
 
 경로는 아래 CONFIG 상수만 서버 실경로로 맞추면 됨.
 독립 실행(3모델 cross 일괄):
-  python Experiment/A/core.py                     # 3모델 × 6 arm → checkpoint/E
-  python Experiment/A/core.py --models bsnet pafe # 일부만
-  python Experiment/A/core.py --skip-existing     # 중단 후 이어서
-(단일 실험은 E1~E4 드라이버 사용: Experiment/A/a4_cross.py 등)
+  python Experiment/A_analysis/core.py                     # 3모델 × 6 arm → checkpoint/E
+  python Experiment/A_analysis/core.py --models bsnet pafe # 일부만
+  python Experiment/A_analysis/core.py --skip-existing     # 중단 후 이어서
+(단일 실험은 E1~E4 드라이버 사용: Experiment/A_analysis/a4_cross.py 등)
 """
 from __future__ import annotations
 
@@ -629,7 +629,8 @@ def _result_dir(run_dir):
     run_dir = Path(run_dir)
     try:
         rel = run_dir.resolve().relative_to((Path(_REPO) / "checkpoint").resolve())
-        d = Path(_REPO) / "Result" / rel
+        tasks = {'E1': 'a4_cross', 'E2': 'a5_indomain_matched', 'E3': 'a6_positive_control', 'E4': 'a7_negative_control', 'AppendixB': 'a8_indomain_raw', 'E0': 'a9_recompute_bestval', 'E': 'core', 'L': 'a10_features'}
+        d = Path(_REPO) / "Result" / "A_analysis" / tasks.get(rel.parts[0], rel.parts[0]) / Path(*rel.parts[1:])
     except ValueError:
         d = run_dir
     d.mkdir(parents=True, exist_ok=True)

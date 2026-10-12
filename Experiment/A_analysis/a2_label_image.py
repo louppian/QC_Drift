@@ -13,12 +13,12 @@ from scipy.stats import rankdata
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import core as B  # noqa: E402
+from Experiment.A_analysis import core as B  # noqa: E402
 
 
 REPO = Path(B._REPO)
 ROI = ["RT", "LT", "RB", "LB"]
-RESULT_L = REPO / "Result" / "L"
+RESULT_L = REPO / "Result" / "A_analysis" / "a2_label_image"
 FEATURES_PATH = RESULT_L / "l2_features.csv"
 AUC_PATH = RESULT_L / "l2_auc.csv"
 

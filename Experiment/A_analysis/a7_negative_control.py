@@ -11,7 +11,7 @@ E4 — 반합성 음성 대조 (학습량 비대칭, 누출곡선)   [draft §5.
       (선택: 영상 블러/노이즈 변형은 InhaUHMaskDataset 훅이 필요 — 본 스크립트는 데이터량 비대칭 사용.)
 
 실행:  python e4_negative_control.py --year 2024 --fracs 1.0 0.5 0.25 --reps 42 1 2 --epochs 50
-산출:  checkpoint/E4/ (가중치·npz) + Result/E4/ (per-run json) + Result/E4/e4_summary.json (누출곡선)
+산출:  checkpoint/E4/ (가중치·npz) + Result/A_analysis/a7_negative_control/ (per-run json) + Result/A_analysis/a7_negative_control/e4_summary.json (누출곡선)
 """
 import argparse, os as _os, sys as _sys
 import numpy as np
@@ -20,8 +20,8 @@ import pandas as pd
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
-from Experiment.A.a6_positive_control import two_halves         # 동일 정합 half 분할 재사용
+from Experiment.A_analysis import common as A
+from Experiment.A_analysis.a6_positive_control import two_halves         # 동일 정합 half 분할 재사용
 
 
 def degraded_splitter(year, train_half, test_half, train_frac, val_seed):
@@ -75,12 +75,12 @@ def main():
     out = dict(year=int(args.year), n_H1=len(H1), n_H2=len(H2), curve=curve,
                note="참 δ=0. frac↓ 일수록 δ_spurious 가 0 에서 벗어나면 A1 위반이 δ 로 누출됨을 뜻함.")
 
-    A.save_json(out, A.RESULT_OUT / "E4" / "e4_summary.json")
+    A.save_json(out, A.RESULT_OUT / "A_analysis" / "a7_negative_control" / "e4_summary.json")
     print("\n" + "=" * 70)
     print(f"{'train_frac':>12}{'δ_spurious':>14}{'s(모델)':>12}   (참 δ=0)")
     for c in curve:
         print(f"{c['train_frac']:>12.2f}{c['delta_spurious']:>+14.4f}{c['s_mean']:>+12.4f}")
-    print("saved:", A.RESULT_OUT / "E4" / "e4_summary.json")
+    print("saved:", A.RESULT_OUT / "A_analysis" / "a7_negative_control" / "e4_summary.json")
 
 
 if __name__ == "__main__":

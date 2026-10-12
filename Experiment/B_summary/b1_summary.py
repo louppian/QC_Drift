@@ -5,20 +5,20 @@ E 결과 집계 — E1~E5 단일 진입점 (舊 A/run_all.py 의 판정 로직 �
 - E1 cross : results.json 10개(fwd/rev × split1~5) → 방향별 test bias 평균±sd,
              ROI별 δ_obs=(rev−fwd)/2 · γ=(rev+fwd)/2 · 방향반전(flip) 판정.
 - E2 (matched) : e2_summary.json → Δg CSV (matched). 부록B(raw)는 appb_summary.json.
-- 최종 판정 : δ_corr = δ_obs + Δγ_matched/2 (환자 부트스트랩 95% CI) → Result/A1_verdict.json.
+- 최종 판정 : δ_corr = δ_obs + Δγ_matched/2 (환자 부트스트랩 95% CI) → Result/B_summary/b1_summary/A1_verdict.json.
 - E3/E4    : 복원 기울기(양성대조)·누출(음성대조) 요약 출력.
 
 check_value_{l,e,a}.py 는 이 산출물을 draft md 값과 '비교만' 한다(계산 안 함).
 
 산출:
-  Result/E1/e1_summary.csv   fwd/rev/δ/γ/flip
-  Result/E2/e2_summary.csv           Δg_matched (Experiment 2)
-  Result/AppendixB/appb_summary.csv  Δg_raw (부록 B)
-  Result/A1_verdict.json     δ_obs·γ·Δγ·δ_corr+CI (최종 판정)
+  Result/B_summary/b1_summary/e1_summary.csv   fwd/rev/δ/γ/flip
+  Result/B_summary/b1_summary/e2_summary.csv           Δg_matched (Experiment 2)
+  Result/B_summary/b1_summary/appb_summary.csv  Δg_raw (부록 B)
+  Result/B_summary/b1_summary/A1_verdict.json     δ_obs·γ·Δγ·δ_corr+CI (최종 판정)
 
 실행:
-  python Experiment/B/b1_summary.py
-  python Experiment/B/b1_summary.py --runs /path/to/Result/E1/dorga
+  python Experiment/B_summary/b1_summary.py
+  python Experiment/B_summary/b1_summary.py --runs /path/to/Result/A_analysis/a4_cross/dorga
 """
 import argparse
 import csv
@@ -34,14 +34,14 @@ for _s in (sys.stdout, sys.stderr):              # Windows cp949 콘솔 유니�
 
 _HERE = Path(__file__).resolve().parent          # Experiment/E
 _REPO = _HERE.parents[1]                          # Private repo 루트
-RUNS_DIR   = _REPO / "Result" / "E1" / "dorga"       # 입력: {24to26,26to24}_split{k}/results.json
-CKPT_E1    = _REPO / "Result" / "E1" / "dorga"   # 입력: npz (환자 부트스트랩 CI 용)
-RESULT_E1  = _REPO / "Result" / "E1"
-RESULT_MATCHED = _REPO / "Result" / "E2"           # Experiment 2 (matched in-domain, Δγ)
-RESULT_POS     = _REPO / "Result" / "E3"           # Experiment 3 (양성대조, 복원곡선)
-RESULT_NEG     = _REPO / "Result" / "E4"           # Experiment 4 (음성대조, 누출)
-RESULT_APPB    = _REPO / "Result" / "AppendixB"    # 부록 B (raw in-domain, Δg_raw)
-RESULT_ROOT = _REPO / "Result"
+RUNS_DIR   = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"       # 입력: {24to26,26to24}_split{k}/results.json
+CKPT_E1    = _REPO / "Result" / "A_analysis" / "a4_cross" / "dorga"   # 입력: npz (환자 부트스트랩 CI 용)
+RESULT_E1  = _REPO / "Result" / "B_summary" / "b1_summary"
+RESULT_MATCHED = _REPO / "Result" / "A_analysis" / "a5_indomain_matched"           # Experiment 2 (matched in-domain, Δγ)
+RESULT_POS     = _REPO / "Result" / "A_analysis" / "a6_positive_control"           # Experiment 3 (양성대조, 복원곡선)
+RESULT_NEG     = _REPO / "Result" / "A_analysis" / "a7_negative_control"           # Experiment 4 (음성대조, 누출)
+RESULT_APPB    = _REPO / "Result" / "A_analysis" / "a8_indomain_raw"    # 부록 B (raw in-domain, Δg_raw)
+RESULT_ROOT = _REPO / "Result" / "B_summary" / "b1_summary"
 ROI = ["RT", "LT", "RB", "LB"]
 NBOOT = 5000
 
@@ -96,14 +96,14 @@ def _export_indomain(summary_json, a1_key, dg_col, reject_col, out_dir, out_name
     print(f"[save] {p}")
 
 
-def export_matched():   # Experiment 2 (matched) → Result/E2/e2_summary.csv (Δg_matched)
+def export_matched():   # Experiment 2 (matched) → Result/B_summary/b1_summary/e2_summary.csv (Δg_matched)
     _export_indomain(RESULT_MATCHED / "e2_summary.json", "A1_test_matched",
-                     "delta_g_matched", "reject_A1_matched", RESULT_MATCHED, "e2_summary.csv")
+                     "delta_g_matched", "reject_A1_matched", RESULT_ROOT, "e2_summary.csv")
 
 
-def export_appb():      # 부록 B (raw) → Result/AppendixB/appb_summary.csv (Δg_raw)
+def export_appb():      # 부록 B (raw) → Result/B_summary/b1_summary/appb_summary.csv (Δg_raw)
     _export_indomain(RESULT_APPB / "appb_summary.json", "A1_test",
-                     "delta_g_raw", "reject_A1_raw", RESULT_APPB, "appb_summary.csv")
+                     "delta_g_raw", "reject_A1_raw", RESULT_ROOT, "appb_summary.csv")
 
 
 # ═══════════════ 환자 bias 부트스트랩 (E1 npz, split 전부 pool) ═══════════════
@@ -156,7 +156,7 @@ def build_verdict(dobs_map=None):
     """δ_obs 점추정은 E1 split 평균(dobs_map, results.json 유래 = git 재현) **단일 소스**를 쓴다.
     E1 표와 δ_corr 이 같은 δ_obs 를 공유하므로 두 값이 갈리지 않는다.
     Δγ 점추정·CI 는 e3_summary.json(git). δ_obs·δ_corr 의 CI 는 npz 환자 부트스트랩 폭을
-    점추정에 중심맞춰 산출(npz 없으면 CI 생략, 점추정만). → Result/A1_verdict.json."""
+    점추정에 중심맞춰 산출(npz 없으면 CI 생략, 점추정만). → Result/B_summary/b1_summary/A1_verdict.json."""
     def _ld(p):
         return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
     matched = _ld(RESULT_MATCHED / "e2_summary.json")   # Δγ (Experiment 2, matched)
@@ -309,8 +309,8 @@ def main():
     args = ap.parse_args()
     runs_dir = Path(args.runs)
 
-    export_matched()                    # Experiment 2 matched Δg → Result/E2/e2_summary.csv
-    export_appb()                       # 부록 B raw Δg           → Result/AppendixB/appb_summary.csv
+    export_matched()                    # Experiment 2 matched Δg → Result/B_summary/b1_summary/e2_summary.csv
+    export_appb()                       # 부록 B raw Δg           → Result/B_summary/b1_summary/appb_summary.csv
 
     recs = load_all(runs_dir)
     if not recs:
@@ -370,7 +370,7 @@ def main():
     print(f"[save] {csv_path}")
 
     dobs_map = {row["roi"]: row for row in csv_rows}   # E1 표와 동일한 split 평균 δ_obs 단일 소스
-    build_verdict(dobs_map)             # δ_corr + CI → Result/A1_verdict.json
+    build_verdict(dobs_map)             # δ_corr + CI → Result/B_summary/b1_summary/A1_verdict.json
 
 
 if __name__ == "__main__":

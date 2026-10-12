@@ -11,8 +11,8 @@ L3 프록시 독립성 — 전처리 일치판 (2024 도 2026 과 동일한 seg+
       RT/LT/LB 는 회복되면 → RB 드리프트가 강도 프록시 아티팩트가 아님이 특징 독립적으로 확증.
       여전히 전 ROI 잔차면 → 전처리가 아니라 다른 전역 요인.
 
-실행: python L3_features_matched.py   (torch_ev + GPU)
-산출: Result/L/roi_features_matched.csv , Result/L/L3_matched_summary.txt
+실행: python Experiment/A_analysis/a11_features_matched.py   (torch_ev + GPU)
+산출: Result/A_analysis/a11_features_matched/roi_features_matched.csv , Result/A_analysis/a11_features_matched/L3_matched_summary.txt
 """
 import os, sys
 from pathlib import Path
@@ -23,19 +23,19 @@ import pandas as pd
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
-from Experiment.A import a10_features as L               # features(), l3_explain(), R4 재사용
+from Experiment.A_analysis import common as A
+from Experiment.A_analysis import a10_features as L               # features(), l3_explain(), R4 재사용
 
 IMG_ORIG = str(Path(A.B._REPO) / "CXR/Merged/images_original")
 
 
 def build_matched():
-    df = L.CSV
+    df = A.legacy_manifest()
     # 2024 raw 를 2026 과 동일 seg+STN 으로
-    raw24 = sorted({os.path.join(IMG_ORIG, Path(r["image_path"]).name)
+    raw24 = sorted({A.legacy_raw_path(r)
                     for _, r in df[df.year == 2024].iterrows()})
     print(f"2024 raw {len(raw24)}장 → seg+STN ...")
-    cache24 = A.B.build_2026_cache(raw24)
+    cache24 = A.build_2026_cache(raw24)
     print(f"2026 → seg+STN ...")
     cache26 = A.build_full_2026_cache()
 
@@ -43,10 +43,10 @@ def build_matched():
     for _, r in df.iterrows():
         y = int(r["year"])
         if y == 2024:
-            key = os.path.join(IMG_ORIG, Path(r["image_path"]).name)
+            key = A.legacy_raw_path(r)
             src = cache24
         else:
-            key = A.B.raw_path_from_npz(r["image_path"]); src = cache26
+            key = A.legacy_raw_path(r); src = cache26
         if key not in src:
             continue
         img_u8, msk_u8 = src[key]
@@ -59,7 +59,8 @@ def build_matched():
 
 def main():
     df = build_matched()
-    df.to_csv(A.RESULT_OUT / "L" / "roi_features_matched.csv", index=False, encoding="utf-8")
+    (A.RESULT_OUT / "A_analysis" / "a11_features_matched").mkdir(parents=True, exist_ok=True)
+    df.to_csv(A.RESULT_OUT / "A_analysis" / "a11_features_matched" / "roi_features_matched.csv", index=False, encoding="utf-8")
     Lm = ["L3 explained% — 전처리 일치판 (2024·2026 모두 seg+STN)",
           "낮을수록 잔차 지배(드리프트 신호). RB 만 낮고 나머지 회복되면 프록시 독립 확증.",
           f"{'특징':>6}" + "".join(f"{r:>9}" for r in L.R4)]
@@ -74,7 +75,7 @@ def main():
     Lm.append(f"\nn: 2024 {int((df.year==2024).sum())}장 / 2026 {int((df.year==2026).sum())}장 · "
               f"fallback {int(df.fallback.sum())}건")
     txt = "\n".join(Lm)
-    (A.RESULT_OUT / "L" / "L3_matched_summary.txt").write_text(txt, encoding="utf-8")
+    (A.RESULT_OUT / "A_analysis" / "a11_features_matched" / "L3_matched_summary.txt").write_text(txt, encoding="utf-8")
     print(txt)
 
 

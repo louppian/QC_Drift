@@ -21,7 +21,7 @@ import numpy as np
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
+from Experiment.A_analysis import common as A
 
 FOLDS = 5
 DIRS = {"fwd": (2024, 2026, "24to26"), "rev": (2026, 2024, "26to24")}   # 이름: train연도→test연도

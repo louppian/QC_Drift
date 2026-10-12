@@ -16,8 +16,8 @@ L3 지표(ROI별): explained% = 1 - |adj|/|marg|, adj=Σ_g Δ_g·n_g/Σn_g, marg
 판정: RB explained% 가 강도(8%)처럼 낮게(잔차 지배) 유지되면, L3 신호가 강도 프록시
       아티팩트가 아니라 특징 독립적임을 뜻한다 → L3·L4 수렴이 서로 다른 정보원 위에 섬.
 
-실행: python L3_features.py   (GPU 필요: 2026 seg+STN)
-산출: D:\npjDM2026\runs\roi_features_full.csv , L3_feature_summary.txt
+실행: python Experiment/A_analysis/a10_features.py   (GPU 필요: 2026 seg+STN)
+산출: Result/A_analysis/a10_features/{roi_features_full.csv,L3_feature_summary.txt}
 """
 import os, sys
 from pathlib import Path
@@ -29,14 +29,10 @@ from scipy import ndimage as ndi
 import sys as _path_sys
 from pathlib import Path as _Path
 _path_sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
-from Experiment.A import common as A
+ROOT = Path(__file__).resolve().parents[2]
 
-OUT = A.RESULT_OUT / "L"                # L 산출(csv·txt)은 Result/L (git 추적)
-OUT.mkdir(parents=True, exist_ok=True)
-IMG24 = str(Path(A.B._REPO) / "CXR/Merged/images_normalize")
-MSK24 = str(Path(A.B._REPO) / "CXR/Merged/masks")
+OUT = ROOT / "Result/A_analysis/a10_features"
 R4 = ["RT", "RB", "LT", "LB"]          # split4 순서
-CSV = pd.read_csv(A.MANIFEST)
 
 
 def split4(mask_bin, min_area=1000):
@@ -84,17 +80,19 @@ def features(img, mask):
 
 
 def build():
+    from Experiment.A_analysis import common as A
+    CSV = A.legacy_manifest()
+    OUT.mkdir(parents=True, exist_ok=True)
     rows = []
     # 2026 캐시 (seg+STN)
     cache = A.build_full_2026_cache()
     for _, r in CSV.iterrows():
         y = int(r["year"])
         if y == 2024:
-            stem = Path(r["image_path"]).name
-            img = np.asarray(Image.open(Path(IMG24) / stem).convert("L"), np.float32) / 255.0
-            mask = np.asarray(Image.open(Path(MSK24) / stem).convert("L")) > 0
+            img = np.asarray(Image.open(A.B._resolve_img(r["uid"])).convert("L"), np.float32) / 255.0
+            mask = np.asarray(Image.open(A.B._resolve_mask(r["uid"])).convert("L")) > 0
         else:
-            key = A.B.raw_path_from_npz(r["image_path"])
+            key = A.legacy_raw_path(r)
             if key not in cache:
                 continue
             img_u8, msk_u8 = cache[key]
@@ -131,13 +129,15 @@ def l3_explain(df, feat):
 def main():
     df = build()
     # mu 검증: roi_intensity_full.csv 와 2024 상관
-    ref = pd.read_csv(os.path.join(Path(A.MANIFEST).parent, "roi_intensity_full.csv"))
-    L = ["검증: 재계산 mu vs roi_intensity_full.csv (2024, ROI별 상관)"]
-    for r in R4:
-        m = df[(df.year == 2024)].reset_index(drop=True)[f"mu_{r}"]
-        rr = ref[ref.year == 2024].reset_index(drop=True)[f"mu_{r}"]
-        n = min(len(m), len(rr))
-        L.append(f"  mu_{r}: corr={np.corrcoef(m[:n], rr[:n])[0,1]:.3f}")
+    L = []
+    if ((ROOT / "CXR/Merged") / "roi_intensity_full.csv").exists():
+        ref = pd.read_csv(os.path.join((ROOT / "CXR/Merged"), "roi_intensity_full.csv"))
+        L.append("검증: 재계산 mu vs roi_intensity_full.csv (2024, ROI별 상관)")
+        for r in R4:
+            m = df[(df.year == 2024)].reset_index(drop=True)[f"mu_{r}"]
+            rr = ref[ref.year == 2024].reset_index(drop=True)[f"mu_{r}"]
+            n = min(len(m), len(rr))
+            L.append(f"  mu_{r}: corr={np.corrcoef(m[:n], rr[:n])[0,1]:.3f}")
     # L3 재산출
     L.append("\nL3 explained% (등급이 연도차를 설명하는 비율; 낮을수록 잔차 지배=드리프트 신호)")
     L.append(f"{'특징':>6}" + "".join(f"{r:>9}" for r in R4))

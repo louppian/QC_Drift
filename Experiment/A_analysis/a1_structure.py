@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-L0–L1 — 구조·분포 (draft §4.2 표1) → Result/L/l1_structure.csv
+L0–L1 — 구조·분포 (draft §4.2 표1) → Result/A_analysis/a1_structure/l1_structure.csv
 
 labels.csv 만으로 계산(학습·이미지·GPU 불필요, 최속). 연도 = patient_id 접두어 24_/26_.
 
@@ -8,7 +8,7 @@ labels.csv 만으로 계산(학습·이미지·GPU 불필요, 최속). 연도 = 
 (마르코프 등급전이 방향비는 시퀀스 순서 컬럼이 필요 — labels.csv 에 순서/시간이 없어 생략.
  build_dataset 에서 순서 컬럼을 넣으면 여기에 추가한다.)
 
-실행: python Experiment/A/a1_structure.py [--csv labels.csv]
+실행: python Experiment/A_analysis/a1_structure.py [--csv labels.csv]
 """
 import argparse
 import csv
@@ -27,7 +27,7 @@ for _s in (sys.stdout, sys.stderr):
 REPO = Path(__file__).resolve().parents[2]
 ROI = ["RT", "LT", "RB", "LB"]
 CSV_DEFAULT = str(REPO / "CXR/Merged/labels.csv")
-OUT = REPO / "Result" / "L" / "l1_structure.csv"
+OUT = REPO / "Result" / "A_analysis" / "a1_structure" / "l1_structure.csv"
 
 REF = {"n_pat": (68, 46), "n_img": (718, 587), "seq": (10.56, 12.76),
        "mean": (1.640, 1.427), "g0": (0.165, 0.236), "g4": (0.093, 0.070),

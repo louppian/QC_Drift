@@ -1,6 +1,6 @@
 # 실험 계획서
 
-영역 순서: **[RT, LT, RB, LB]** (전 실험 공통)
+영역 표시 순서: **[RT, LT, RB, LB]**. 복원한 E0(a9)·특징(a10/a11)의 내부 순서는 원본 **[RT, RB, LT, LB]**를 유지한다.
 
 ## 0. 잘못 기록 — cross 에 matched 를 섞은 오류
 
@@ -67,16 +67,16 @@
 | **E4** 음성대조 | β=0, 학습량 비대칭 train_frac ∈ {1.0, 0.5, 0.25}. reps 42·1·2. δ_spurious 누출 | `checkpoint/E4/` + `e4_summary.json` |
 | **부록 B** in-domain raw | E2와 동일하나 **raw**(전 환자, 정합 전). Δg_raw. 수축분 = Δg_raw − Δg_matched | `checkpoint/AppendixB/dorga/` + `appb_summary.json` |
 
-판정: δ_corr = δ_obs + Δg/2 (E3 matched). `B/b1_summary.py` → `A1_verdict.json` (+CI).
+판정: δ_corr = δ_obs + Δg/2 (E3 matched). `B_summary/b1_summary.py` → `A1_verdict.json` (+CI).
 
 ## 5. L 분석 (학습 무관: L1·L2·L4)
 
 | 레벨 | 계산 | 산출 |
 |---|---|---|
-| **L1** 구조·분포 | 환자·영상수, 시퀀스길이, 평균등급, 등급 0~4 비율 (labels.csv) | `Result/L/l1_structure.csv` |
-| **L2** 라벨-영상 | ROI **6-특징**[1차 4(mean·median·uniformity·entropy) + GLRLM SRE + GLSZM SAE]. 그레이 Ng=16, ROI [min,max] 양자화, GLRLM 4방향 합산, GLSZM 8-연결. 인접등급 방향무관 AUC=max(a,1−a). 경계 3→4, 귀무 max 순열 1,500회 보정 | `Result/L/{l2_features,l2_auc}.csv` |
+| **L1** 구조·분포 | 환자·영상수, 시퀀스길이, 평균등급, 등급 0~4 비율 (labels.csv) | `Result/A_analysis/a1_structure/l1_structure.csv` |
+| **L2** 라벨-영상 | ROI **6-특징**[1차 4(mean·median·uniformity·entropy) + GLRLM SRE + GLSZM SAE]. 그레이 Ng=16, ROI [min,max] 양자화, GLRLM 4방향 합산, GLSZM 8-연결. 인접등급 방향무관 AUC=max(a,1−a). 경계 3→4, 귀무 max 순열 1,500회 보정 | `Result/A_analysis/a2_label_image/{l2_features,l2_auc}.csv` |
 | **L3** 방향반전 분해 | E1 예측 → δ·γ (모델 의존) | (= E1) |
-| **L4** 재현성 | 재측정 2세션 → 자기일치 ACC, weighted κ(quadratic), Wilcoxon | `Result/L/l4_reproducibility.csv` |
+| **L4** 재현성 | 재측정 2세션 → 자기일치 ACC, weighted κ(quadratic), Wilcoxon | `Result/A_analysis/a3_reproducibility/l4_reproducibility.csv` |
 
 ## 6. 평가·통계
 
@@ -91,44 +91,51 @@
 ## 7. 실행
 
 ```bash
-python Experiment/A/a4_cross.py                       # fwd·rev × split 1~5 (10 arm)
-python Experiment/A/a4_cross.py --mode fwd --split 1  # 특정 방향·split 만
-python Experiment/A/a5_indomain_matched.py --folds 5 --init_seeds 42 1 2  # E2 matched
-python Experiment/A/a6_positive_control.py --year 2024 --betas 0 0.25 0.5 1.0 --reps 42 1 2  # E3 양성
-python Experiment/A/a7_negative_control.py --year 2024 --fracs 1.0 0.5 0.25 --reps 42 1 2    # E4 음성
-python Experiment/A/a8_indomain_raw.py --folds 5 --init_seeds 42 1 2  # 부록 B raw
+python Experiment/A_analysis/a4_cross.py                       # fwd·rev × split 1~5 (10 arm)
+python Experiment/A_analysis/a4_cross.py --mode fwd --split 1  # 특정 방향·split 만
+python Experiment/A_analysis/a5_indomain_matched.py --folds 5 --init_seeds 42 1 2  # E2 matched
+python Experiment/A_analysis/a6_positive_control.py --year 2024 --betas 0 0.25 0.5 1.0 --reps 42 1 2  # E3 양성
+python Experiment/A_analysis/a7_negative_control.py --year 2024 --fracs 1.0 0.5 0.25 --reps 42 1 2    # E4 음성
+python Experiment/A_analysis/a8_indomain_raw.py --folds 5 --init_seeds 42 1 2  # 부록 B raw
 
-python Experiment/A/a1_structure.py
-python Experiment/A/a2_label_image.py
-python Experiment/A/a3_reproducibility.py --cxr_root "CXR/2026 CXR"
+python Experiment/A_analysis/a1_structure.py
+python Experiment/A_analysis/a2_label_image.py
+python Experiment/A_analysis/a3_reproducibility.py --cxr_root "CXR/2026 CXR"
 
-python Experiment/B/b1_summary.py    # E1~E5 집계 + δ_corr 판정 → Result/A1_verdict.json
+python Experiment/B_summary/b1_summary.py    # E1~E5 집계 + δ_corr 판정 → Result/B_summary/b1_summary/A1_verdict.json
 python Experiment/compare.py
 ```
 
 
 ## QC_Drift 실행 구조
 
-A/a1~a8은 독립 분석·실험, B/b1은 E 결과 집계, C/c1은 그림이다.
-core.py·train.py·common.py는 A 폴더에 있다.
-A/a9~a11은 이전 E0/특징 보조 코드이며 현재 core에 없는 API를 사용하므로 주 재현 실행 대상이 아니다.
-B/b2는 기존 TODO 파일이며 계산을 수행하지 않는다. D는 보고서 종합 판단이며 대응 Python 파일이 없다.
+Experiment와 Result는 같은 상위 구조를 쓴다.
+
+- `A_analysis`: a1~a11 분석. Result 안에서도 실행 파일 이름별 하위 폴더에 저장한다.
+- `B_summary`: b1_summary 판정·집계, b2_feature_summary 특징 집계.
+- `C_figures`: c1_confusion 혼동행렬.
+
+core.py·train.py·common.py는 A_analysis 폴더에 있다.
+a9는 recovery에서 찾은 원래 E0 평가 함수와 15% val 분할을 복원했다.
+a10/a11은 npj 원본의 특징 계산과 이미지·마스크에 같은 STN 변환을 적용하는 전처리를 연결했다.
+b2는 a10/a11의 CSV에 원본 l3_explain을 적용해 crude/adj/explained를 저장한다.
+D는 보고서 종합 판단이며 대응 Python 파일이 없다.
 
 서버 QC_Drift 루트에서 실행한다. 기존 checkpoint 내부 이름(E1/E2/E3/E4/AppendixB)은 유지한다.
-A/a4~a8 기본 실행은 best_val_model.pth를 읽어 원래 분할·모델·evaluate·_write_results로 재추론한다.
+A_analysis/a4~a8 기본 실행은 best_val_model.pth를 읽어 원래 분할·모델·evaluate·_write_results로 재추론한다.
 기존 checkpoint의 가중치와 예측은 수정하지 않는다. 새 예측 NPZ와 지표는 Result에 생성한다.
 Result_old의 지표·학습 기록을 새 결과로 복사하지 않는다. --overwrite만 명시적인 재학습이다.
 학습 history와 tail_bias는 best-val 평가로 재현할 수 없으므로 compare에서 비검증 항목으로 표시한다.
 
-서버에서 전체 생성 후 비교:
+서버에서 Result_old에 대응하는 a1~a8 → b1 → c1 생성 후 비교:
 
 ```bash
 python Experiment/compare.py --run
 ```
 
 ```bash
-python Experiment/B/b1_summary.py
-python Experiment/C/c1_confusion.py
+python Experiment/B_summary/b1_summary.py
+python Experiment/C_figures/c1_confusion.py
 python Experiment/compare.py
 ```
 
@@ -136,3 +143,15 @@ compare.py는 Phase1의 E1/E2/E3/E4/AppendixB/L 및 A1_verdict.json을 비교한
 CSV/JSON의 누락과 수치 차이는 실패로 반환한다. 기본 허용오차는 atol=1e-6, rtol=1e-5이다.
 새 항목도 차이로 표시하며 기준에 없다고 자동 통과시키지 않는다. 이미지·텍스트는 별도 표시한다.
 환자 NPZ·가중치를 읽어 평가하는 실험은 서버에서만 실행한다.
+
+이전 E0·특징 분석 실행(주 재현 실행과 별도):
+
+```bash
+python Experiment/A_analysis/a9_recompute_bestval.py
+python Experiment/A_analysis/a10_features.py
+python Experiment/A_analysis/a11_features_matched.py
+python Experiment/B_summary/b2_feature_summary.py
+```
+
+Result_old는 원본 구조를 보존한다. compare.py가 이전 경로와 새 A/B/C 경로를 매핑한다.
+로컬에서는 문법·경로·비교 로직만 검증하며, 실제 수치 일치 여부는 서버 실행으로 확인한다.
