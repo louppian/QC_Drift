@@ -1,6 +1,6 @@
 # Phase 2 export 이후 분석
 
-분석 순서는 방향반전분해와 재판독의 상대적 차이 → 등급별 이동 및 RB 경계 → 반복판독 → 과거 AI 대조다. 제시 문맥 분석은 포함하지 않는다. 기존 코드와 결과가 있는 `C_analysis_old`는 수정하지 않는다.
+분석 순서는 방향반전분해와 재판독의 상대적 차이 → 등급별 이동 및 RB 경계 → 반복판독 → 과거 AI 대조다. c7에서 서로 다른 mini-sequence의 반복 판단 유지와 원본 길이를 기술적으로 집계한다. 기존 코드와 결과가 있는 `C_analysis_old`는 수정하지 않는다.
 
 ## 코드와 산출물
 
@@ -13,6 +13,9 @@
 | c3_grade_boundary | 기존×재판독 5×5 등급 교차표, 기존 등급별 변화, RB 0↔1부터 3↔4까지 경계 통과 및 기존 contrast | transition, grade_change, boundary_count, boundary_estimate, hypothesis_condition |
 | c4_repeat_variability | 기준 안정화 평가: 기존–현재와 첫–반복 비교, 반복 건수, 연도 직접 대비, 전체 제시 RB 차이 SD | comparison, repeat_count, year_contrast, full_presentation_dispersion |
 | c5_ai_linkage | 과거 AI 예측·원판독·재판독 직접 연결, 등급별 건수, AI 일치도 변화, 경계별 판단 유지·변경과 환자 bootstrap | statistic, ai_transition, down_ai_by_grade, count, observation, source, ai_boundary, ai_boundary_contrast, ai_transition_rate |
+
+| c6_three_hypotheses | 공통 분모 B·C와 탐색적 가설 방향 비교 및 공개 AI 집계 | hypothesis_estimate, hypothesis_count, hypothesis_condition 및 c5 집계 |
+| c7_sequence_context | 구간 구성 차이·반복 판단 유지·원본 길이 집계 | sequence_composition, repeat_grade, target_repeat, source_length |
 
 c1은 실험 공통 입력이다. c2~c5가 기존 네 분석이고 c6는 공통 분모의 가설 방향 비교와 공개용 AI 집계다. 이전 c4의 보고서 표는 별도 실험이나 산출물로 생성하지 않는다. 표의 숫자와 판정은 c3·c4 CSV에서 재구성할 수 있다.
 
@@ -52,6 +55,8 @@ python Experiment/Phase2/C_analysis/c3_grade_boundary.py
 python Experiment/Phase2/C_analysis/c4_repeat_variability.py
 python Experiment/Phase2/C_analysis/c5_ai_linkage.py --historical-root "D:/InhaUH_CXR/2026.05 CXRs"
 python Experiment/Phase2/C_analysis/c6_three_hypotheses.py
+python Experiment/Phase2/C_analysis/c7_sequence_context.py
+python Experiment/Phase2/D_manuscript/d1_manuscript_tables.py
 ```
 
 c1과 c5의 `--unified-labels` 기본값은 `CXR/unified_labels.csv`다. 원자료 경로는 인자로 전달한다. 분석 코드는 old 코드·결과를 입력으로 사용하지 않는다.
@@ -73,7 +78,11 @@ c1과 c5의 `--unified-labels` 기본값은 `CXR/unified_labels.csv`다. 원자�
 
 ## 별도 생성하지 않는 기존 출력
 
-- 제시 문맥의 길이별 분석, 동일 7장 비교, 제외 영상 수와 수정의 연관 분석은 요청에 따라 제외했다.
+- c7은 구간 구성과 반복 판단 유지, 원본 길이 분포를 집계한다. 길이별 효과 검정과 제외 영상 수에 따른 수정 연관 분석은 별도 생성하지 않는다.
 - 기존 보고서 표 두 개와 해석 TXT는 별도 생성하지 않는다. 수치와 조건 판정은 c3·c4에 보존했다.
 - 기존 extra31의 연도·등급·선정 역할 요약은 별도 생성하지 않는다. 해당 31개 행은 c1의 record_type=presentation, read_type=first_read, pi_uid가 비어 있는 행으로 남아 있다.
 - 기존 검증 요약 JSON은 별도 생성하지 않는다. 반환 파일 검증은 c1, 과거 AI 원자료 검증은 c5에 포함한다.
+
+## 원고 표 연결
+
+D_manuscript/d1_manuscript_tables.py는 기존 c3와 c7을 읽어 Result/Phase2/D_manuscript에 S4–S6 CSV, supplemental_tables.md, manuscript_mapping.csv를 생성한다. 새 통계 검정 없이 기존 추정값과 기술 집계를 연결한다. c7 공개 CSV에는 영상·환자 식별자와 원본 경로를 저장하지 않는다.
