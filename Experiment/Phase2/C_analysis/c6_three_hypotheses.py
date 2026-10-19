@@ -1,15 +1,20 @@
 """Compare T and the common-denominator AI components; export aggregate rows only."""
+import argparse
 import numpy as np
 import pandas as pd
 from common import B, SEED, OUT, interval, populations, presentations, save
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--roi", choices=["RB", "LT"], default="RB")
+    roi = ap.parse_args().roi
+    suffix = "" if roi == "RB" else "_" + roi
     original = populations(presentations())['original800']
-    linkage = pd.read_csv(OUT / 'c5_ai_linkage.csv')
-    ai = linkage.loc[linkage.record_type.eq('observation'), ['uid', 'ai_RB']]
+    linkage = pd.read_csv(OUT / ('c5_ai_linkage' + suffix + '.csv'))
+    ai = linkage.loc[linkage.record_type.eq('observation'), ['uid', f'ai_{roi}']]
     data = original.merge(ai, on='uid', how='left', validate='one_to_one')
-    assert len(data) == 800 and data.loc[data.year.eq(2026), 'ai_RB'].notna().all()
+    assert len(data) == 800 and data.loc[data.year.eq(2026), f'ai_{roi}'].notna().all()
     patients = data.groupby('pid', sort=True).year.first()
     pids = list(patients.index)
     draw = np.zeros((B, len(pids)))
@@ -29,12 +34,12 @@ def main():
         return mat[:, 0].sum() / mat[:, 1].sum(), boot, dict(
             numerator=int(event.loc[mask].sum()), denominator=len(sub), patients=sub.pid.nunique())
 
-    up, up_boot, up_count = rate(data.year.eq(2024) & data.old_RB.eq(3), data.new_RB.eq(4))
-    down, down_boot, down_count = rate(data.year.eq(2024) & data.old_RB.eq(4), data.new_RB.le(3))
-    old4 = data.year.eq(2026) & data.old_RB.eq(4)
-    b, b_boot, b_count = rate(old4, data.ai_RB.eq(4) & data.new_RB.le(3))
-    c, c_boot, c_count = rate(old4, data.ai_RB.le(3) & data.new_RB.le(3))
-    common = dict(analysis='original800', roi='RB', bootstrap=B, seed=SEED,
+    up, up_boot, up_count = rate(data.year.eq(2024) & data[f'old_{roi}'].eq(3), data[f'new_{roi}'].eq(4))
+    down, down_boot, down_count = rate(data.year.eq(2024) & data[f'old_{roi}'].eq(4), data[f'new_{roi}'].le(3))
+    old4 = data.year.eq(2026) & data[f'old_{roi}'].eq(4)
+    b, b_boot, b_count = rate(old4, data[f'ai_{roi}'].eq(4) & data[f'new_{roi}'].le(3))
+    c, c_boot, c_count = rate(old4, data[f'ai_{roi}'].le(3) & data[f'new_{roi}'].le(3))
+    common = dict(analysis='original800', roi=roi, bootstrap=B, seed=SEED,
                   cluster='patient within year', multiplicity='none; exploratory directional contrasts')
     rows = []
     terms = [('T', up-down, up_boot-down_boot), ('B', b, b_boot), ('C', c, c_boot),
@@ -58,7 +63,7 @@ def main():
     aggregate = aggregate.drop(columns=['uid', 'pid', 'source_npz', 'source_index', 'sha256'], errors='ignore')
     assert not any(col in aggregate for col in ['uid', 'pid', 'source_npz', 'source_index', 'sha256'])
     result = pd.concat([aggregate, pd.DataFrame(rows)], ignore_index=True)
-    save(result, 'c6_three_hypotheses')
+    save(result, 'c6_three_hypotheses' + suffix)
 
 
 if __name__ == '__main__':

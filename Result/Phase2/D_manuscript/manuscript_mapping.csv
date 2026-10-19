@@ -2,14 +2,15 @@
 1,2.1,c1_read_results.csv,presentation,analysis populations,image/patient
 2,3.1,a2_label_image_auc.csv,,boundary 3-4,image
 3,3.2,b1_summary.csv,,delta_corrected,patient bootstrap
+3a,3.2,b3_roi_boundary_priority.csv,all,ROI CI and boundary delta AUC CI exclude zero,patient within year
 4,3.4,c3_grade_boundary.csv,boundary_estimate,"original800; T,U,delta_year,delta_cutpoint",weighted conditional grade
 5,3.5,c6_three_hypotheses.csv,statistic;ai_transition_rate,AI and old grade conditions,conditional image
 6,3.6,c6_three_hypotheses.csv,ai_boundary,old_above_ai,conditional image
 7,3.7,c4_repeat_variability.csv,comparison,RB,repeat pair
-8,3.9,c6_three_hypotheses.csv,statistic,AI agreement and MAE,300 images
+8,3.9,c6_three_hypotheses.csv,statistic;ai_transition,"AI agreement, below/above prediction and MAE",300 images
 S1,supplement,b1_summary.csv,,"raw,matched,ROI contrasts",patient bootstrap
-S2,supplement,c6_three_hypotheses.csv,ai_boundary;ai_boundary_contrast,boundary comparisons,conditional image
-S3,supplement,c3_grade_boundary.csv,boundary_count;boundary_estimate,"T,U; all populations",population-specific
-S4,3.4,c3_grade_boundary.csv,transition,original800;RB,old grade row
-S5,3.4,c3_grade_boundary.csv,boundary_count;boundary_estimate,original800;RB;up/down,conditional grade
-S6,3.8,c7_sequence_context.csv,all,all,image/pair/sequence
+6a,3.6,c6_three_hypotheses.csv,ai_boundary;ai_boundary_contrast,boundary comparisons,conditional image
+S2,supplement,c3_grade_boundary.csv,boundary_count;boundary_estimate,"T,U; all populations",population-specific
+4a,3.4,c3_grade_boundary.csv,transition,original800;RB,old grade row
+S3,supplement,c3_grade_boundary.csv,boundary_count;boundary_estimate,original800;RB;up/down,conditional grade
+7a,3.8,c7_sequence_context.csv,all,all,image/pair/sequence

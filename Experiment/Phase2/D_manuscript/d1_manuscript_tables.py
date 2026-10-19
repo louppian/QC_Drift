@@ -23,8 +23,8 @@ def main():
     transition['row_total'] = transition.groupby(['year', 'old_grade']).n.transform('sum')
     transition['row_rate'] = transition.n / transition.row_total
     transition[['year', 'old_grade', 'new_grade', 'n', 'row_total', 'row_rate']].to_csv(
-        OUT / 'table_s4_rb_transitions.csv', index=False, encoding='utf-8-sig')
-    sections = ['### 보충표 S4. 연도별 RB 기존 등급과 재판독 등급\n']
+        OUT / 'table_4a_rb_transitions.csv', index=False, encoding='utf-8-sig')
+    sections = ['### 표 4a. 연도별 RB 기존 등급과 재판독 등급\n']
     for year, total in [(2024, 500), (2026, 300)]:
         sub = transition[transition.year.eq(year)]
         assert sub.n.sum() == total and len(sub) == 25
@@ -34,7 +34,7 @@ def main():
         matrix['합계'] = sub.groupby('old_grade').n.sum().astype(int)
         sections += [f'{year}년: {total}장. 셀은 실제 영상 수입니다.\n', markdown(matrix), '']
     sections += ['행 비율은 각 기존 등급의 영상 수를 분모로 하며, CSV에 함께 저장하였다.\n',
-                 '### 보충표 S5. 최초 800장의 RB 전체 인접 경계 변화\n']
+                 '### 보충표 S3. 최초 800장의 RB 전체 인접 경계 변화\n']
     counts = primary[primary.record_type.eq('boundary_count')].set_index('term')
     estimates = primary[primary.record_type.eq('boundary_estimate')].set_index('parameter')
     rows, display = [], []
@@ -56,11 +56,11 @@ def main():
             assert abs(value - estimates.loc[name, 'estimate']) < 1e-12
         high = estimates.loc['T' if year == 2024 else 'U', 'estimate']
         assert abs(high - estimates.loc[f'D23_{year}', 'estimate'] - estimates.loc[f'delta_cutpoint_{year}', 'estimate']) < 1e-12
-    pd.DataFrame(rows).to_csv(OUT / 'table_s5_rb_boundaries.csv', index=False, encoding='utf-8-sig')
+    pd.DataFrame(rows).to_csv(OUT / 'table_s3_rb_boundaries.csv', index=False, encoding='utf-8-sig')
     sections += [markdown(pd.DataFrame(display, columns=['연도', '경계', '변화 방향', '실제 분자/분모', '가중 비율 (%)', '95% CI (%)'])),
                  '\n높은 쪽 변경의 분모는 기존 낮은 인접 등급, 낮은 쪽 변경의 분모는 기존 높은 인접 등급이다. 비율과 구간은 기존 역확률 가중 추정값이다. 두 조건부 비율의 차이를 사용한 T·U와 경계 선택성은 본문 표 4에 제시하였다.\n',
-                 '### 보충표 S6. mini-sequence 반복 구성과 RB 판단 유지\n']
-    c7.to_csv(OUT / 'table_s6_sequence_context.csv', index=False, encoding='utf-8-sig')
+                 '### 표 7a. mini-sequence 반복 구성과 RB 판단 유지\n']
+    c7.to_csv(OUT / 'table_7a_sequence_context.csv', index=False, encoding='utf-8-sig')
     labels = {'different_context': '다른 구간 구성', 'same_grade': '같은 등급 유지',
               'grade4_changed': '4등급 여부 변경', 'repeated_images': '대상 중 반복 영상',
               'single_presentation_images': '대상 중 단회 영상', 'all_repeats_grade3': '모든 반복에서 3 유지',
@@ -73,25 +73,64 @@ def main():
                         f'{int(r.numerator)}/{int(r.denominator)}', f'{100*r.estimate:.1f}'])
     sections += [markdown(pd.DataFrame(display, columns=['연도', '항목', '단위', '분자/분모', '비율 (%)'])),
                  '\n대상은 AI≤3·기존 4·최초 재판독 3인 23장이다. 반복된 6장에서 8쌍의 비교가 발생했다. 원본 길이 분포와 전체 반복 지표는 CSV에 저장하였다. 반복 비교는 서로 다른 7장 구간 사이의 판단 유지를 평가한다.\n']
-    (OUT / 'supplemental_tables.md').write_text('\n\n'.join(sections), encoding='utf-8')
+    c6 = pd.read_csv(SRC / 'c6_three_hypotheses.csv')
+    stats = c6[c6.record_type.eq('statistic')].set_index('metric')
+    triples = c6[c6.record_type.eq('ai_transition')]
+    total = int(triples.n.sum())
+    assert total == 300
+    evaluation = []
+    for metric, label, mode in [('ACC', '정확 일치율', 'statistic'),
+                                ('below', '낮게 예측한 비율', 'count'),
+                                ('above', '높게 예측한 비율', 'count'),
+                                ('MAE', 'MAE', 'statistic')]:
+        if mode == 'statistic':
+            old = stats.loc[f'old_AI_{metric}', 'estimate']
+            new = stats.loc[f'new_AI_{metric}', 'estimate']
+            change = stats.loc[f'{metric}_change']
+            low, high = change.ci_low, change.ci_high
+            assert abs(new - old - change.estimate) < 1e-12
+        else:
+            rates = []
+            for reference in ['old_RB', 'new_RB']:
+                mask = triples.ai_RB.lt(triples[reference]) if metric == 'below' else triples.ai_RB.gt(triples[reference])
+                rates.append(triples.loc[mask, 'n'].sum() / total)
+            old, new = rates
+            low = high = float('nan')
+        evaluation.append(dict(metric=metric, denominator=total, old=old, new=new,
+                               change=new-old, ci_low=low, ci_high=high,
+                               unit='grade' if metric == 'MAE' else 'proportion'))
+    evaluation = pd.DataFrame(evaluation)
+    evaluation.to_csv(OUT / 'table_8_ai_evaluation.csv', index=False, encoding='utf-8-sig')
+    display = []
+    for r, label in zip(evaluation.itertuples(), ['정확 일치율', '낮게 예측한 비율', '높게 예측한 비율', 'MAE']):
+        if r.metric == 'MAE':
+            display.append([label, f'{r.old:.3f}', f'{r.new:.3f}', f'{r.change:+.3f}등급', f'[{r.ci_low:.3f}, {r.ci_high:.3f}]'])
+        else:
+            ci = f'[{100*r.ci_low:.2f}, {100*r.ci_high:.2f}]' if pd.notna(r.ci_low) else '—'
+            display.append([label, f'{total}장 중 {100*r.old:.2f}%', f'{total}장 중 {100*r.new:.2f}%', f'{100*r.change:+.2f}%p', ci])
+    sections += ['### 표 8. 동일 AI의 원판독·재판독 기준 평가 지표',
+                 markdown(pd.DataFrame(display, columns=['지표', '원판독 기준', '재판독 기준', '변화', '변화의 95% CI'])),
+                 '낮게·높게 예측한 비율은 각 판독 등급과 AI 예측을 비교한 값이며 변화는 점추정값이다.']
+    (OUT / 'manuscript_tables.md').write_text('\n\n'.join(sections), encoding='utf-8')
     mapping = [
         ('1','2.1','c1_read_results.csv','presentation','analysis populations','image/patient'),
         ('2','3.1','a2_label_image_auc.csv','','boundary 3-4','image'),
         ('3','3.2','b1_summary.csv','','delta_corrected','patient bootstrap'),
+        ('3a','3.2','b3_roi_boundary_priority.csv','all','ROI CI and boundary delta AUC CI exclude zero','patient within year'),
         ('4','3.4','c3_grade_boundary.csv','boundary_estimate','original800; T,U,delta_year,delta_cutpoint','weighted conditional grade'),
         ('5','3.5','c6_three_hypotheses.csv','statistic;ai_transition_rate','AI and old grade conditions','conditional image'),
         ('6','3.6','c6_three_hypotheses.csv','ai_boundary','old_above_ai','conditional image'),
         ('7','3.7','c4_repeat_variability.csv','comparison','RB','repeat pair'),
-        ('8','3.9','c6_three_hypotheses.csv','statistic','AI agreement and MAE','300 images'),
+        ('8','3.9','c6_three_hypotheses.csv','statistic;ai_transition','AI agreement, below/above prediction and MAE','300 images'),
         ('S1','supplement','b1_summary.csv','','raw,matched,ROI contrasts','patient bootstrap'),
-        ('S2','supplement','c6_three_hypotheses.csv','ai_boundary;ai_boundary_contrast','boundary comparisons','conditional image'),
-        ('S3','supplement','c3_grade_boundary.csv','boundary_count;boundary_estimate','T,U; all populations','population-specific'),
-        ('S4','3.4','c3_grade_boundary.csv','transition','original800;RB','old grade row'),
-        ('S5','3.4','c3_grade_boundary.csv','boundary_count;boundary_estimate','original800;RB;up/down','conditional grade'),
-        ('S6','3.8','c7_sequence_context.csv','all','all','image/pair/sequence')]
+        ('6a','3.6','c6_three_hypotheses.csv','ai_boundary;ai_boundary_contrast','boundary comparisons','conditional image'),
+        ('S2','supplement','c3_grade_boundary.csv','boundary_count;boundary_estimate','T,U; all populations','population-specific'),
+        ('4a','3.4','c3_grade_boundary.csv','transition','original800;RB','old grade row'),
+        ('S3','supplement','c3_grade_boundary.csv','boundary_count;boundary_estimate','original800;RB;up/down','conditional grade'),
+        ('7a','3.8','c7_sequence_context.csv','all','all','image/pair/sequence')]
     pd.DataFrame(mapping, columns=['table','section','source','record_type','selection','denominator']).to_csv(
         OUT / 'manuscript_mapping.csv', index=False, encoding='utf-8-sig')
-    print('Generated three table CSVs, supplemental_tables.md, manuscript_mapping.csv')
+    print('Generated four table CSVs, manuscript_tables.md, manuscript_mapping.csv')
 
 
 if __name__ == '__main__':

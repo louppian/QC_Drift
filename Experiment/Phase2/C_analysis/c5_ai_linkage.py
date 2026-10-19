@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from common import B, SEED, ROOT, ROIS, interval, populations, presentations, save
 
-def boundary_rows(a, patients, draw):
+def boundary_rows(a, patients, draw, roi="RB"):
     """Paired patient bootstrap for AI disagreements at each grade boundary."""
     rows, rates = [], {}
 
@@ -21,12 +21,12 @@ def boundary_rows(a, patients, draw):
         return dict(numerator=int(event.loc[mask].sum()), denominator=len(sub),
                     patients=sub.pid.nunique(), **interval(point, boot)), boot
 
-    metadata = dict(analysis='original800', roi='RB', year=2026, bootstrap=B,
+    metadata = dict(analysis='original800', roi=roi, year=2026, bootstrap=B,
                     seed=SEED, cluster='patient', weighting='equal image')
     for k in range(4):
         for direction, mask, event in [
-            ('old_above_ai', a.old_RB.gt(k) & a.ai_RB.le(k), a.new_RB.le(k)),
-            ('old_below_ai', a.old_RB.le(k) & a.ai_RB.gt(k), a.new_RB.gt(k)),
+            ('old_above_ai', a[f'old_{roi}'].gt(k) & a[f'ai_{roi}'].le(k), a[f'new_{roi}'].le(k)),
+            ('old_below_ai', a[f'old_{roi}'].le(k) & a[f'ai_{roi}'].gt(k), a[f'new_{roi}'].gt(k)),
         ]:
             for outcome, values in [('changed_to_ai_side', event), ('stayed_on_old_side', ~event)]:
                 stats, boot = rate(mask, values)
@@ -45,8 +45,8 @@ def boundary_rows(a, patients, draw):
                              numerator=high['numerator'], denominator=high['denominator'],
                              reference_numerator=low['numerator'], reference_denominator=low['denominator'],
                              **interval(high['estimate'] - low['estimate'], high_boot - low_boot)))
-    stats, _ = rate(a.ai_RB.eq(3) & a.old_RB.eq(4), a.new_RB.eq(3))
-    rows.append(dict(record_type='ai_transition_rate', ai_RB=3, old_RB=4, new_RB=3,
+    stats, _ = rate(a[f'ai_{roi}'].eq(3) & a[f'old_{roi}'].eq(4), a[f'new_{roi}'].eq(3))
+    rows.append(dict(record_type='ai_transition_rate', **{f'ai_{roi}': 3, f'old_{roi}': 4, f'new_{roi}': 3},
                      metric='new3_given_ai3_old4', **metadata, **stats))
     return rows
 
@@ -54,7 +54,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--historical-root', type=Path, required=True)
     ap.add_argument('--unified-labels', type=Path, default=ROOT / 'CXR/unified_labels.csv')
+    ap.add_argument("--roi", choices=ROIS, default="RB")
     args = ap.parse_args()
+    roi = args.roi
+    suffix = "" if roi == "RB" else "_" + roi
     DATA = args.historical_root
     f = populations(presentations())['original800']
 
@@ -106,12 +109,12 @@ def main():
             assert len(ks) == 1
             k = ks[0]
             indices.append(k)
-            records.append(dict(uid=uid, ai_RB=int(ai[k, 2]), source_npz=path, source_index=k))
+            records.append(dict(uid=uid, **{f'ai_{roi}': int(ai[k, ROIS.index(roi)])}, source_npz=path, source_index=k))
         assert indices == sorted(indices) and len(indices) == len(set(indices))
     a = f[f.year.eq(2026)].merge(pd.DataFrame(records), on='uid', validate='one_to_one')
-    assert len(a) == 300 and a.ai_RB.between(0, 4).all()
-    a['old_ai_distance'] = (a.old_RB - a.ai_RB).abs()
-    a['new_ai_distance'] = (a.new_RB - a.ai_RB).abs()
+    assert len(a) == 300 and a[f'ai_{roi}'].between(0, 4).all()
+    a['old_ai_distance'] = (a[f'old_{roi}'] - a[f'ai_{roi}']).abs()
+    a['new_ai_distance'] = (a[f'new_{roi}'] - a[f'ai_{roi}']).abs()
     a['distance_change'] = a.new_ai_distance - a.old_ai_distance
     assert a.w.eq(1).all()
     patients = sorted(a.pid.unique())
@@ -127,28 +130,28 @@ def main():
             boot = sums[:, 0] / sums[:, 1]
         return dict(numerator=float(vals.sum()), denominator=len(s), patients=s.pid.nunique(), **interval(vals.mean(), boot))
     airesults = {}
-    old4 = a.old_RB.eq(4)
-    down = old4 & a.new_RB.le(3)
-    changed = a.old_RB.ne(a.new_RB)
-    for label, mask in [('ai4', a.ai_RB.eq(4)), ('ai_le3', a.ai_RB.le(3))]:
+    old4 = a[f'old_{roi}'].eq(4)
+    down = old4 & a[f'new_{roi}'].le(3)
+    changed = a[f'old_{roi}'].ne(a[f'new_{roi}'])
+    for label, mask in [('ai4', a[f'ai_{roi}'].eq(4)), ('ai_le3', a[f'ai_{roi}'].le(3))]:
         airesults['down_share_' + label] = stat(a, mask, down)
-        airesults['down_rate_' + label] = stat(a, a.new_RB.le(3), old4 & mask)
-    for label, val in [('old_AI_ACC', a.old_RB.eq(a.ai_RB)), ('new_AI_ACC', a.new_RB.eq(a.ai_RB)), ('ACC_change', a.new_RB.eq(a.ai_RB).astype(int) - a.old_RB.eq(a.ai_RB).astype(int)), ('old_AI_MAE', a.old_ai_distance), ('new_AI_MAE', a.new_ai_distance), ('MAE_change', a.distance_change)]:
+        airesults['down_rate_' + label] = stat(a, a[f'new_{roi}'].le(3), old4 & mask)
+    for label, val in [('old_AI_ACC', a[f'old_{roi}'].eq(a[f'ai_{roi}'])), ('new_AI_ACC', a[f'new_{roi}'].eq(a[f'ai_{roi}'])), ('ACC_change', a[f'new_{roi}'].eq(a[f'ai_{roi}']).astype(int) - a[f'old_{roi}'].eq(a[f'ai_{roi}']).astype(int)), ('old_AI_MAE', a.old_ai_distance), ('new_AI_MAE', a.new_ai_distance), ('MAE_change', a.distance_change)]:
         airesults[label] = stat(a, val)
     for label, event in [('away', a.distance_change.gt(0)), ('toward', a.distance_change.lt(0)), ('equal_distance', a.distance_change.eq(0))]:
         airesults['changed_' + label] = stat(a, event, changed)
     airesults['change_away_minus_toward'] = stat(a, a.distance_change.gt(0).astype(int) - a.distance_change.lt(0).astype(int), changed)
-    airesults['down_ai_by_grade'] = a.loc[down].groupby(['ai_RB', 'old_RB', 'new_RB']).size().rename('n').reset_index().to_dict('records')
+    airesults['down_ai_by_grade'] = a.loc[down].groupby([f'ai_{roi}', f'old_{roi}', f'new_{roi}']).size().rename('n').reset_index().to_dict('records')
     airesults['unchanged'] = int((~changed).sum())
     rows = [dict(record_type='statistic', metric=k, **v, bootstrap=B, seed=SEED, cluster='patient') for k, v in airesults.items() if isinstance(v, dict)]
-    rows += [dict(record_type='ai_transition', **r) for r in a.groupby(['ai_RB', 'old_RB', 'new_RB']).size().rename('n').reset_index().to_dict('records')]
+    rows += [dict(record_type='ai_transition', **r) for r in a.groupby([f'ai_{roi}', f'old_{roi}', f'new_{roi}']).size().rename('n').reset_index().to_dict('records')]
     rows += [dict(record_type='down_ai_by_grade', **r) for r in airesults['down_ai_by_grade']]
     rows.append(dict(record_type='count', metric='unchanged', n=airesults['unchanged']))
-    rows += [dict(record_type='observation', **r) for r in a[['uid', 'pid', 'ai_RB', 'old_RB', 'new_RB', 'source_npz', 'source_index']].to_dict('records')]
+    rows += [dict(record_type='observation', **r) for r in a[['uid', 'pid', f'ai_{roi}', f'old_{roi}', f'new_{roi}', 'source_npz', 'source_index']].to_dict('records')]
     # Labels and AI predictions were validated against these source arrays above.
     for path in sorted(a.source_npz.unique()):
         rows.append(dict(record_type='source', source_npz=path, sha256=sha(Path(path))))
-    rows += boundary_rows(a, patients, draw)
-    save(rows, 'c5_ai_linkage')
+    rows += boundary_rows(a, patients, draw, roi)
+    save(rows, 'c5_ai_linkage' + suffix)
 if __name__ == '__main__':
     main()

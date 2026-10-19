@@ -70,7 +70,7 @@ def interval(point, boot):
                 lower_one_sided=q[1], upper_one_sided=q[2], valid=len(boot))
 
 
-def calculate(d, bootstrap=B, seed=SEED):
+def calculate(d, bootstrap=B, seed=SEED, roi="RB"):
     """Original RB conditional boundary estimands; same draws and patient universe."""
     pats = d.groupby('pid', sort=True).year.first()
     pids = list(pats.index)
@@ -85,9 +85,9 @@ def calculate(d, bootstrap=B, seed=SEED):
             for direction in ['up', 'down', 'net']:
                 sub = d.loc[d.year.eq(year)].copy()
                 if direction != 'net':
-                    sub = sub.loc[sub.old_RB.eq(k if direction == 'up' else k + 1)]
-                event = (sub.new_RB.ge(k + 1) if direction == 'up' else sub.new_RB.le(k)
-                         if direction == 'down' else sub.new_RB.ge(k + 1).astype(int) - sub.old_RB.ge(k + 1).astype(int)).astype(float)
+                    sub = sub.loc[sub[f'old_{roi}'].eq(k if direction == 'up' else k + 1)]
+                event = (sub[f'new_{roi}'].ge(k + 1) if direction == 'up' else sub[f'new_{roi}'].le(k)
+                         if direction == 'down' else sub[f'new_{roi}'].ge(k + 1).astype(int) - sub[f'old_{roi}'].ge(k + 1).astype(int)).astype(float)
                 sub['num'], sub['den'] = event * sub.w, sub.w
                 mat = sub.groupby('pid')[['num', 'den']].sum().reindex(pids, fill_value=0).to_numpy()
                 name = f'{direction}{k}{k+1}_{year}'
